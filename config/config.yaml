@@ -1,0 +1,9 @@
+http:
+  port: 3000
+
+mongo:
+  username: 'mongo'
+  password: 'test'
+
+public-api:
+  service-key: 'service-key'
