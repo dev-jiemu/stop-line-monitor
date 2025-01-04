@@ -1,0 +1,4 @@
+### 버스정류장 정보 리스트 조회
+GET {{public-api.info-url}}/BusStation?Key=[access-key]&Type=json&pSize=50&SIGUN_CD=41280
+Content-Type: application/json
+
