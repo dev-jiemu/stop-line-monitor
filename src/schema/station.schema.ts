@@ -1,4 +1,5 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose'
 
 @Schema()
 export class Station {
@@ -23,3 +24,6 @@ export class Station {
     @Prop()
     longitude: string // 경도
 }
+
+export const StationSchema = SchemaFactory.createForClass(Station)
+export type StationDocument = Station & Document

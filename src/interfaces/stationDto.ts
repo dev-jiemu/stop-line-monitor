@@ -1,4 +1,4 @@
-export type Station = {
+export class StationDto {
     stationManageNo: string
     cityCode: string
     cityName: string
