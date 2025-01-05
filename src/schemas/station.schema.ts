@@ -23,6 +23,12 @@ export class Station {
 
     @Prop()
     longitude: string // 경도
+
+    @Prop()
+    createdDt: Date
+
+    @Prop()
+    updateDt?: Date
 }
 
 export const StationSchema = SchemaFactory.createForClass(Station)

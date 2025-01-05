@@ -1,15 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Station, StationDocument } from '../schema/station.schema';
+import { Station, StationDocument } from '../schemas/station.schema';
 import { Model } from 'mongoose';
-import { StationDto } from '../interfaces/stationDto'
+import { StationDto } from '../models/stationDto'
 
 @Injectable()
 export class PublicRepository {
-    constructor(@InjectModel(Station.name)private stationModel : Model<StationDocument>) {}
+    constructor(@InjectModel(Station.name) private readonly stationModel: Model<StationDocument>) {}
 
-    async getStationList(): Promise<StationDto[]> {
-        return null
+    getStationList(): Promise<StationDto[]> {
+        return this.stationModel.find().exec()
+    }
+
+    async getStation(stationManageNo: string) : Promise<StationDto> {
+        return await this.stationModel.findOne({ stationManageNo }).exec()
+    }
+
+    async createStation(stationDto: StationDto) {
+        const create = {
+            stationManageNo: stationDto.stationManageNo,
+            cityCode: stationDto.cityCode,
+            cityName: stationDto.cityName,
+            stationName: stationDto.stationName,
+            stationLoc: stationDto.stationLoc,
+            latitude: stationDto.latitude,
+            longitude: stationDto.longitude,
+            createdAt: new Date(),
+        }
+
+        await this.stationModel.create(create)
     }
 
 }

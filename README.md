@@ -3,3 +3,11 @@
 
 ----
 
+##### mongo DB 설계
+```markdown
+database : station
+
+stationManageNo: 정류소 번호 (PK)
+cityCode: 도시 코드
+stationName: 정류소 이름
+```
