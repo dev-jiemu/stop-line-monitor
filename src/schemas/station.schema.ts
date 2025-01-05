@@ -25,6 +25,9 @@ export class Station {
     longitude: string // 경도
 
     @Prop()
+    routes: string[] // 정차 노선 정보
+
+    @Prop()
     createdDt: Date
 
     @Prop()

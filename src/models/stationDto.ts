@@ -6,4 +6,5 @@ export class StationDto {
     stationLoc: string
     latitude: string
     longitude: string
+    routes: string[]
 }
