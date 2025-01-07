@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { PublicController } from './public/public.controller';
+import { PublicController } from './modules/public/public.controller';
 import { AppService } from './app.service';
-import { PublicService } from './public/public.service';
+import { StationService } from './modules/station/station.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Station, StationSchema } from './schemas/station.schema';
 
@@ -12,7 +12,7 @@ import { Station, StationSchema } from './schemas/station.schema';
             { name: Station.name, schema: StationSchema },
         ])],
     controllers: [AppController, PublicController],
-    providers: [AppService, PublicService],
+    providers: [AppService, StationService],
 })
 
 export class AppModule {}

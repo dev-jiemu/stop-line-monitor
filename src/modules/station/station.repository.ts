@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Station, StationDocument } from '../schemas/station.schema';
+import { Station, StationDocument } from '../../schemas/station.schema';
 import { Model } from 'mongoose';
-import { StationDto } from '../models/stationDto'
+import { StationDto } from '../../models/stationDto'
 
 @Injectable()
-export class PublicRepository {
+export class StationRepository {
     constructor(@InjectModel(Station.name) private readonly stationModel: Model<StationDocument>) {}
 
     getStationList(): Promise<StationDto[]> {

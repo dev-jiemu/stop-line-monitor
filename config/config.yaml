@@ -7,4 +7,4 @@ mongo:
 
 public-api:
   station-info-url: 'https://openapi.gg.go.kr/BusStation'
-  service-key: '' # 경기 데이터 드림 사이트 인증키
+  service-key: '8554aa0dc5e54c3183b150b44c5a9169' # 경기 데이터 드림 사이트 인증키
