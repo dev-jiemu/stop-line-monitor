@@ -26,8 +26,7 @@ const main = async () => {
 }
 
 main().then(result => {
-    console.log(result)
-    console.log(result.BusStation)
+    console.log(result.BusStation[0]) // head
 }).catch(err => {
     console.error(err)
 })

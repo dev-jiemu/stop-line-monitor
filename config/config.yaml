@@ -2,9 +2,10 @@ http:
   port: 3000
 
 mongo:
+  url: 'mongodb://mongo:test@localhost:27017/stop-line-monitor'
   username: 'mongo'
   password: 'test'
 
-public-api:
-  station-info-url: 'https://openapi.gg.go.kr/BusStation'
-  service-key: '' # 경기 데이터 드림 사이트 인증키
+publicApi:
+  stationInfoUrl: 'https://openapi.gg.go.kr/BusStation'
+  serviceKey: '' # 경기 데이터 드림 사이트 인증키
