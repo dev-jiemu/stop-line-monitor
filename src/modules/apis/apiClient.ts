@@ -1,18 +1,19 @@
 import axios from 'axios'
 
-const fetchApiGet = async (url: string, header: Record<string, string>) : Promise<any> | null => {
+export const fetchApiGet = async <T>(url: string, header?: Record<string, string>): Promise<T | null> => {
     try {
-
         let axiosHeader = {
             'Content-Type': 'application/json',
         }
 
-        if (Object.entries(header).length > 0) {
+        if (header && Object.entries(header).length > 0) {
             axiosHeader = {
                 ...axiosHeader,
                 ...header,
             }
         }
+
+        console.log('fetch get url : ', url)
 
         const response = await axios.get(url, {
             headers: axiosHeader,
@@ -24,8 +25,7 @@ const fetchApiGet = async (url: string, header: Record<string, string>) : Promis
         return err
     }
 }
-
-const fetchApiPost = async (url: string, header: Record<string, string>, body: any) : Promise<any> | null => {
+const fetchApiPost = async <T>(url: string, header?: Record<string, string>, body?: any): Promise<T | null> => {
     try {
         let axiosHeader = {
             'Content-Type': 'application/json',

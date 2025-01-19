@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { PublicController } from './modules/public/public.controller';
 import { AppService } from './app.service';
-import { StationService } from './modules/station/station.service';
-import { BusStopInfo } from './apis/busStopInfo';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from './config/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Station, StationSchema } from './schemas/station.schema';
+import { ApiModule } from './modules/apis/api.module';
+import { StationModule } from './modules/station/station.module';
+import { PublicModule } from './modules/public/public.module';
 
 @Module({
     imports: [
@@ -18,12 +17,12 @@ import { Station, StationSchema } from './schemas/station.schema';
             }),
             inject: [ConfigService],
         }),
-        MongooseModule.forFeature([
-            { name: Station.name, schema: StationSchema },
-        ])
+        ApiModule,
+        StationModule,
+        PublicModule,
     ],
-    controllers: [AppController, PublicController],
-    providers: [AppService, StationService, BusStopInfo],
+    controllers: [AppController],
+    providers: [AppService],
 })
 
 export class AppModule {}

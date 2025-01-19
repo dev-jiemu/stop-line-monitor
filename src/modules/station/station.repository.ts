@@ -16,7 +16,7 @@ export class StationRepository {
         return await this.stationModel.findOne({ stationManageNo }).exec()
     }
 
-    async createStation(stationDto: StationDto) {
+    async createStationOne(stationDto: StationDto) {
         const create = {
             stationManageNo: stationDto.stationManageNo,
             cityCode: stationDto.cityCode,
@@ -29,6 +29,10 @@ export class StationRepository {
         }
 
         await this.stationModel.create(create)
+    }
+
+    async createStationMany(stationList: StationDto[]) {
+        await this.stationModel.insertMany(stationList)
     }
 
 }
