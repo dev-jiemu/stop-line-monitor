@@ -12,7 +12,7 @@ export class Station {
     @Prop()
     cityName: string
 
-    @Prop()
+    @Prop({ required: true, unique: true })
     stationName: string
 
     @Prop()

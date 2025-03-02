@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Station, StationDocument } from '../../schemas/station.schema';
 import { Model } from 'mongoose';
-import { StationDto } from '../../models/stationDto'
+import { StationDto } from '../../models/station-dto'
 
 @Injectable()
 export class StationRepository {
@@ -31,8 +31,18 @@ export class StationRepository {
         await this.stationModel.create(create)
     }
 
+    // stationNo 겹치면 업데이트 처리
     async createStationMany(stationList: StationDto[]) {
-        await this.stationModel.insertMany(stationList)
+        const bulkOps = stationList.map(station => ({
+            updateOne: {
+                filter: { stationManageNo: station.stationManageNo, stationName: station.stationName },
+                update: { $set: station },
+                upsert: true
+            }
+        }))
+
+        await this.stationModel.bulkWrite(bulkOps)
+        //await this.stationModel.insertMany(stationList)
     }
 
 }

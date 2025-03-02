@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { StationRepository } from './station.repository';
-import { StationDto } from '../../models/stationDto';
+import { StationDto } from '../../models/station-dto';
 
 @Injectable()
 export class StationService {

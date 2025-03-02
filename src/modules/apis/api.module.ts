@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { BusStopInfo } from './busStopInfo';
+import { BusStopInfo } from './bus-stop-info';
 
 @Module({
     providers: [BusStopInfo]

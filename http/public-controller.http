@@ -1,0 +1,7 @@
+### 내부 컨트롤러 : 버스정류장 정보 가져오기
+GET {{endpoint}}/public/bus-stop
+Content-Type: application/json
+
+### 내부 컨트롤러 : 버스정류장 정보 입력하기
+POST {{endpoint}}/public/bus-stop
+Content-Type: application/json
