@@ -13,7 +13,7 @@ export const fetchApiGet = async <T>(url: string, header?: Record<string, string
             }
         }
 
-        console.log('fetch get url : ', url)
+        // console.log('fetch get url : ', url)
 
         const response = await axios.get(url, {
             headers: axiosHeader,

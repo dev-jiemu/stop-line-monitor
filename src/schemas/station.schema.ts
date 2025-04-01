@@ -3,7 +3,8 @@ import { Document } from 'mongoose'
 
 @Schema()
 export class Station {
-    @Prop({ required: true, unique: true })
+    // @Prop({ required: true, unique: true })
+    @Prop()
     stationManageNo: string // 정류소코드
 
     @Prop()
@@ -12,7 +13,8 @@ export class Station {
     @Prop()
     cityName: string
 
-    @Prop({ required: true, unique: true })
+    // @Prop({ required: true, unique: true })
+    @Prop()
     stationName: string
 
     @Prop()
