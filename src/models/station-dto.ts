@@ -1,4 +1,5 @@
 export class StationDto {
+    stationId: string
     stationManageNo: string
     cityCode: string
     cityName: string

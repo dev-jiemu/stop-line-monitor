@@ -37,6 +37,7 @@ export class PublicController {
 
         for (const element of result.BusStation[1].row) {
             const item: StationDto = {
+                stationId: element.STATION_ID,
                 stationManageNo: element.STATION_MANAGE_NO,
                 cityCode: element.SIGUN_CD,
                 cityName: element.SIGUN_NM,
@@ -60,6 +61,7 @@ export class PublicController {
 
             for (const element of result.BusStation[1].row) {
                 const item: StationDto = {
+                    stationId: element.STATION_ID,
                     stationManageNo: element.STATION_MANAGE_NO,
                     cityCode: element.SIGUN_CD,
                     cityName: element.SIGUN_NM,
@@ -111,6 +113,7 @@ export class PublicController {
         for (const element of result.BusStation[1].row) {
             if (element.STATION_MANAGE_NO !== null) {
                 const item: StationDto = {
+                    stationId: element.STATION_ID,
                     stationManageNo: element.STATION_MANAGE_NO,
                     cityCode: element.SIGUN_CD,
                     cityName: element.SIGUN_NM,
@@ -138,6 +141,7 @@ export class PublicController {
             for (const element of result.BusStation[1].row) {
                 if (element.STATION_MANAGE_NO !== null) {
                     const item: StationDto = {
+                        stationId: element.STATION_ID,
                         stationManageNo: element.STATION_MANAGE_NO,
                         cityCode: element.SIGUN_CD,
                         cityName: element.SIGUN_NM,
@@ -151,6 +155,7 @@ export class PublicController {
             }
         }
 
+        // insert data
         if (stations && stations.length > 0) {
             this.stationService.createStationLists(stations).then(() => {
                 console.log('createStationLists success')

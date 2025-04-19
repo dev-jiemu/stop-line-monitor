@@ -8,14 +8,16 @@ import { StationDto } from '../../models/station-dto'
 export class StationRepository {
     constructor(@InjectModel(Station.name) private readonly stationModel: Model<StationDocument>) {}
 
-    getStationList(): Promise<StationDto[]> {
-        return this.stationModel.find().exec()
-    }
+    // TODO: 구조 변경으로 인한 재구현
+    // getStationList(): Promise<StationDto[]> {
+    //     return this.stationModel.find().exec()
+    // }
+    //
+    // async getStation(stationManageNo: string) : Promise<StationDto> {
+    //     return await this.stationModel.findOne({ stationManageNo }).exec()
+    // }
 
-    async getStation(stationManageNo: string) : Promise<StationDto> {
-        return await this.stationModel.findOne({ stationManageNo }).exec()
-    }
-
+    // TODO: 구조 변경으로 인한 재구현
     async createStationOne(stationDto: StationDto) {
         const create = {
             stationManageNo: stationDto.stationManageNo,
@@ -35,7 +37,7 @@ export class StationRepository {
     async createStationMany(stationList: StationDto[]) {
         const bulkOps = stationList.map(station => ({
             updateOne: {
-                filter: { stationManageNo: station.stationManageNo, stationName: station.stationName },
+                filter: { _id: station.stationId },
                 update: { $set: station },
                 upsert: true
             }
