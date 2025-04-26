@@ -2,7 +2,7 @@ http:
   port: 3000
 
 mongo:
-  url: 'mongodb://mongo:test@localhost:27017/stop-line-monitor'
+  url: 'mongodb://mongo:test@localhost:27017/stop-line-monitor?authSource=test'
   username: 'mongo'
   password: 'test'
 
