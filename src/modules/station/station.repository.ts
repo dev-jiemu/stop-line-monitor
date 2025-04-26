@@ -37,14 +37,13 @@ export class StationRepository {
     async createStationMany(stationList: StationDto[]) {
         const bulkOps = stationList.map(station => ({
             updateOne: {
-                filter: { _id: station.stationId },
+                filter: { stationId: station.stationId },
                 update: { $set: station },
                 upsert: true
             }
         }))
 
         await this.stationModel.bulkWrite(bulkOps)
-        //await this.stationModel.insertMany(stationList)
     }
 
 }

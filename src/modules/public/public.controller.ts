@@ -45,17 +45,16 @@ export class PublicController {
                 stationLoc: element.LOCPLC_LOC,
                 latitude: element.WGS84_LAT,
                 longitude: element.WGS84_LOGT,
-            };
-            stations.push(item);
+            }
+            stations.push(item)
         }
 
         for (let page = pIndex + 1; page <= totalPages; page++) {
-            let result = await this.busStopInfo.getBusStopInformation(this.pSize, page)
+            result = await this.busStopInfo.getBusStopInformation(this.pSize, page)
 
             if (result.BusStation[0].head[1].RESULT.CODE !== "INFO-000") {
                 response.result = false
                 response.reason = result.BusStation[0].head[1].RESULT.MESSAGE
-
                 return response
             }
 
@@ -69,20 +68,20 @@ export class PublicController {
                     stationLoc: element.LOCPLC_LOC,
                     latitude: element.WGS84_LAT,
                     longitude: element.WGS84_LOGT,
-                };
-                stations.push(item);
+                }
+                stations.push(item)
             }
         }
 
         response.result = true
         response.data = {
-            total_count : totalCount,
-            total_pages : totalPages,
-            stations_count : stations.length,
-            stations : stations
+            total_count: totalCount,
+            total_pages: totalPages,
+            stations_count: stations.length,
+            stations: stations,
         }
 
-        return response
+        return response;
     }
 
     @Post('/bus-stop')
@@ -177,6 +176,12 @@ export class PublicController {
         }
 
         return response
+    }
+
+    // 정류소별 정차 버스 리스트 insert
+    @Post('/routes')
+    async insertBusRouteList() {
+
     }
 }
 
