@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { fetchApiGet } from './axios-client';
-import { BusStationResponse } from '../../interfaces/public-api';
+import { BusStationResponse } from '../../interfaces/bus-station-response';
 import { SIGUN_CD } from '../../constants/codes';
 
 @Injectable()

@@ -1,4 +1,9 @@
 ### 버스정류장 정보 리스트 조회
-GET {{public-api.info-url}}/BusStation?Key={{public-api.access-key}}&Type=json&pSize=50&SIGUN_CD=41280
+GET {{public-api.openapi-url}}/BusStation?Key={{public-api.openapi-access-key}}&Type=json&pSize=50&pIndex=3&SIGUN_CD=41280
 Content-Type: application/json
 
+### 경기버스정보: 정류소명/번호 목록조회
+GET {{public-api.data-url}}/busstationservice/v2/getBusStationListv2?serviceKey={{public-api.data-access-key}}&format=json&keyword=19348
+
+### 경기버스정보: 정류소 경유노선 목록조회
+GET {{public-api.data-url}}/busstationservice/v2/getBusStationViaRouteListv2?serviceKey={{public-api.data-access-key}}&format=json&stationId=218000317
