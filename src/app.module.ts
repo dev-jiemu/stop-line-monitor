@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ApiModule } from './modules/apis/api.module';
 import { StationModule } from './modules/station/station.module';
 import { PublicModule } from './modules/public/public.module';
+import { BatchModule } from './jobs/batch.module';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { PublicModule } from './modules/public/public.module';
         ApiModule,
         StationModule,
         PublicModule,
+        BatchModule,
     ],
     controllers: [AppController],
     providers: [AppService],

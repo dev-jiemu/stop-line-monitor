@@ -177,11 +177,5 @@ export class PublicController {
 
         return response
     }
-
-    // 정류소별 정차 버스 리스트 insert
-    @Post('/routes')
-    async insertBusRouteList() {
-
-    }
 }
 
