@@ -22,6 +22,9 @@ export class StationUpdateService {
 
         // TODO : fetch route list
         // 1. 오래된 업데이트 순으로 최대 500개씩 끊어서 가져올것
+
+
+
         // 2. update 하는 로직 호출
     }
 }

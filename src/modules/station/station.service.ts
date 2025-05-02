@@ -9,4 +9,8 @@ export class StationService {
     async createStationLists(stations: StationDto[]) {
         await this.stationRepository.createStationMany(stations)
     }
+
+    async getStationListForBatch(limit: number) : Promise<StationDto[]> {
+        return await this.stationRepository.getStationListForBatch(limit)
+    }
 }

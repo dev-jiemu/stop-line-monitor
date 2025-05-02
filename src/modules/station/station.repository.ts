@@ -8,14 +8,10 @@ import { StationDto } from '../../models/station-dto'
 export class StationRepository {
     constructor(@InjectModel(Station.name) private readonly stationModel: Model<StationDocument>) {}
 
-    // TODO: 구조 변경으로 인한 재구현
-    // getStationList(): Promise<StationDto[]> {
-    //     return this.stationModel.find().exec()
-    // }
-    //
-    // async getStation(stationManageNo: string) : Promise<StationDto> {
-    //     return await this.stationModel.findOne({ stationManageNo }).exec()
-    // }
+    // getStationListForBatch : 업데이트 기준으로 limit search
+    async getStationListForBatch(limit: number) : Promise<StationDto[]> {
+        return await this.stationModel.find().sort({updateDt: 1}).limit(limit).exec();
+    }
 
     // TODO: 구조 변경으로 인한 재구현
     async createStationOne(stationDto: StationDto) {

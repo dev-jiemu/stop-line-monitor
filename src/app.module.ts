@@ -8,6 +8,7 @@ import { ApiModule } from './modules/apis/api.module';
 import { StationModule } from './modules/station/station.module';
 import { PublicModule } from './modules/public/public.module';
 import { BatchModule } from './jobs/batch.module';
+import { DevModule } from './modules/dev/dev.module';
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { BatchModule } from './jobs/batch.module';
         StationModule,
         PublicModule,
         BatchModule,
+        DevModule,
     ],
     controllers: [AppController],
     providers: [AppService],
