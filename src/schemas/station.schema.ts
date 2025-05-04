@@ -35,7 +35,7 @@ export class Station {
     createdDt: Date
 
     @Prop()
-    updateDt?: Date
+    updatedDt?: Date
 }
 
 export const StationSchema = SchemaFactory.createForClass(Station)

@@ -10,7 +10,8 @@ export class StationRepository {
 
     // getStationListForBatch : 업데이트 기준으로 limit search
     async getStationListForBatch(limit: number) : Promise<StationDto[]> {
-        return await this.stationModel.find().sort({updateDt: 1}).limit(limit).exec();
+        return await this.stationModel.find().sort({updatedDt: 1}).limit(limit).exec()
+        //return await this.stationModel.find().limit(limit).exec()
     }
 
     // TODO: 구조 변경으로 인한 재구현
@@ -24,6 +25,7 @@ export class StationRepository {
             latitude: stationDto.latitude,
             longitude: stationDto.longitude,
             createdAt: new Date(),
+            updatedAt: new Date(),
         }
 
         await this.stationModel.create(create)
@@ -31,10 +33,20 @@ export class StationRepository {
 
     // stationNo 겹치면 업데이트 처리
     async createStationMany(stationList: StationDto[]) {
+        const now = new Date();
+
         const bulkOps = stationList.map(station => ({
             updateOne: {
                 filter: { stationId: station.stationId },
-                update: { $set: station },
+                update: {
+                    $set: {
+                        ...station,
+                        updatedDt: now
+                    },
+                    $setOnInsert: {
+                        createdDt: now
+                    }
+                },
                 upsert: true
             }
         }))
