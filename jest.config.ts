@@ -1,5 +1,4 @@
-// jest.config.ts
-import type { Config } from 'jest';
+import type { Config } from 'jest'
 
 const config: Config = {
     moduleFileExtensions: ['js', 'json', 'ts'],
@@ -14,6 +13,6 @@ const config: Config = {
         "<rootDir>/src/",
         "<rootDir>/test/"
     ]
-};
+}
 
-export default config;
+export default config
