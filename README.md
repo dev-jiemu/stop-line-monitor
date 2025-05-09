@@ -132,6 +132,7 @@ Sample
 ```
 
 4/28 :: 일일 API 호출 제한이 있어서 route list 불러오는건 batch job 으로 처리해야할듯 ㅠ
+=> 기존 cron 배치 말고 어차피 경유노선 넣은 뒤에 실시간 데이터 쌓아야하니까 bull 공부해봄
 
 ---
 #### Public API List
