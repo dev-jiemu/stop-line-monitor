@@ -14,5 +14,4 @@ export class BusRouteInfo {
         let url = `${reqUrl}/busstationservice/v2/getBusStationViaRouteListv2?serviceKey=${serviceKey}&format=json&stationId=${stationId}`
         return await fetchApiGet<BusRouteListResponse>(url)
     }
-
 }

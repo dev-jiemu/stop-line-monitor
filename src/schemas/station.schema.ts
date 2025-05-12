@@ -1,6 +1,20 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose'
 
+@Schema({ _id: false }) // 중첩 스키마에는 보통 _id: false 옵션을 사용한다고? ㅇㅂㅇ
+export class Route {
+    @Prop()
+    routeId: number
+
+    @Prop()
+    routeDestId: number
+
+    @Prop()
+    routeName: number
+}
+
+export const RouteSchema = SchemaFactory.createForClass(Route)
+
 @Schema()
 export class Station {
 
@@ -28,8 +42,11 @@ export class Station {
     @Prop()
     longitude: string // 경도
 
-    @Prop()
-    routes: string[] // 정차 노선 정보
+    //정차 노선 정보
+    //@Prop()
+    //routes: string[]
+    @Prop({ type: [RouteSchema] })
+    routes: Route[]
 
     @Prop()
     createdDt: Date
