@@ -7,5 +7,11 @@ export class StationDto {
     stationLoc: string | null
     latitude: string
     longitude: string
-    routes?: string[] // 정차하는 버스 노선 리스트
+    routes?: StationRouteDto[] // 정차하는 버스 노선 리스트
+}
+
+export class StationRouteDto {
+    routeId: number
+    routeDestId: number
+    routeName: number
 }
