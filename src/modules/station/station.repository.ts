@@ -13,25 +13,31 @@ export class StationRepository {
         return await this.stationModel.find().sort({updatedDt: 1}).limit(limit).exec()
     }
 
-    // TODO: 구조 변경으로 인한 재구현
-    async createStationOne(stationDto: StationDto) {
-        const create = {
-            stationManageNo: stationDto.stationManageNo,
-            cityCode: stationDto.cityCode,
-            cityName: stationDto.cityName,
-            stationName: stationDto.stationName,
-            stationLoc: stationDto.stationLoc,
-            latitude: stationDto.latitude,
-            longitude: stationDto.longitude,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        }
+    async upsertStationOne(stationDto: StationDto) {
+        const now = new Date();
 
-        await this.stationModel.create(create)
+        await this.stationModel.findOneAndUpdate(
+                { stationId: stationDto.stationId },  // filter
+                {
+                    $set: {
+                        ...stationDto,
+                        updatedDt: now
+                    },
+                    $setOnInsert: {
+                        createdDt: now
+                    } // update
+                },
+                // options (new: true 옵션 주면 객체 리턴함ㅇㅇ)
+                {
+                    upsert: true,
+                    runValidators: true // 스키마 유효성 검사 실행
+                }
+        )
     }
 
-    // stationNo 겹치면 업데이트 처리
-    async createStationMany(stationList: StationDto[]) {
+
+    // stationNo 겹치면 업데이트 처리, 아니면 insert 처리
+    async upsertStationMany(stationList: StationDto[]) {
         const now = new Date();
 
         const bulkOps = stationList.map(station => ({
@@ -52,5 +58,4 @@ export class StationRepository {
 
         await this.stationModel.bulkWrite(bulkOps)
     }
-
 }

@@ -13,5 +13,5 @@ export class StationDto {
 export class StationRouteDto {
     routeId: number
     routeDestId: number
-    routeName: number
+    routeName: number  // 공공데이터 API에서 int로 제공
 }

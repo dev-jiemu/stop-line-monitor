@@ -10,7 +10,7 @@ export class Route {
     routeDestId: number
 
     @Prop()
-    routeName: number
+    routeName: number  // 공공데이터 API에서 int로 제공
 }
 
 export const RouteSchema = SchemaFactory.createForClass(Route)

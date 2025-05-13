@@ -7,7 +7,11 @@ export class StationService {
     constructor(private readonly stationRepository: StationRepository) {}
 
     async createStationLists(stations: StationDto[]) {
-        await this.stationRepository.createStationMany(stations)
+        await this.stationRepository.upsertStationMany(stations)
+    }
+
+    async updateStationLists(stations: StationDto[]) {
+        await this.stationRepository.upsertStationMany(stations)
     }
 
     async getStationListForBatch(limit: number): Promise<StationDto[]> {
