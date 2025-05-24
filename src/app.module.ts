@@ -8,6 +8,7 @@ import { ApiModule } from './modules/apis/api.module';
 import { StationModule } from './modules/station/station.module';
 import { PublicModule } from './modules/public/public.module';
 import { BullModule } from '@nestjs/bull';
+import { BatchModule } from './jobs/batch.module';
 
 @Module({
     imports: [
@@ -27,6 +28,7 @@ import { BullModule } from '@nestjs/bull';
         ApiModule,
         StationModule,
         PublicModule,
+        BatchModule,
     ],
     controllers: [AppController],
     providers: [AppService],

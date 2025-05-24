@@ -11,7 +11,6 @@ export class StationUpdateService {
     
     constructor(
         @InjectQueue('station-update-queue') private stationQueue: Queue,
-        private readonly stationService: StationService,
         private readonly configService: ConfigService
     ) {
         this.setupStartJobs();
@@ -175,6 +174,53 @@ export class StationUpdateService {
             return { 
                 error: error.message 
             }
+        }
+    }
+
+    /**
+     * 실패한 작업들 정리
+     */
+    async clearFailedJobs() {
+        try {
+            await this.stationQueue.clean(0, 'failed');
+            this.logger.log('Cleared all failed jobs');
+            return { success: true, message: 'Failed jobs cleared' };
+        } catch (error) {
+            this.logger.error(`Failed to clear failed jobs: ${error.message}`);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * 완료된 작업들 정리
+     */
+    async clearCompletedJobs() {
+        try {
+            await this.stationQueue.clean(0, 'completed');
+            this.logger.log('Cleared all completed jobs');
+            return { success: true, message: 'Completed jobs cleared' };
+        } catch (error) {
+            this.logger.error(`Failed to clear completed jobs: ${error.message}`);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * 모든 작업 이력 정리
+     */
+    async clearAllJobs() {
+        try {
+            await Promise.all([
+                this.stationQueue.clean(0, 'completed'),
+                this.stationQueue.clean(0, 'failed'),
+                this.stationQueue.clean(0, 'active'),
+                // this.stationQueue.clean(0, 'waiting')
+            ]);
+            this.logger.log('Cleared all job history');
+            return { success: true, message: 'All job history cleared' };
+        } catch (error) {
+            this.logger.error(`Failed to clear all jobs: ${error.message}`);
+            return { success: false, error: error.message };
         }
     }
 }

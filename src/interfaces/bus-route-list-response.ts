@@ -12,7 +12,7 @@ export interface BusRouteListResponse {
                 routeDestId: number,
                 routeDestName: string,
                 routeId: number,
-                routeName: number, // 이게 노선번호
+                routeName: string | number, // 문자열 또는 숫자 모두 가능
                 routeTypeCd: number,
                 routeTypeName: string,
                 staOrder: number,

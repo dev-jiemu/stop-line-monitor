@@ -63,7 +63,7 @@ export class StationUpdateProcessor {
                             let routes: StationRouteDto[] = routeList.map(element => ({
                                 routeId: element.routeId,
                                 routeDestId: element.routeDestId,
-                                routeName: element.routeName,
+                                routeName: String(element.routeName), // 문자열로 변환
                             }))
 
                             // 정류장 정보 업데이트

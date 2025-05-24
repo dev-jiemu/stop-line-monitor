@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Station, StationSchema } from '../schemas/station.schema';
 import { StationUpdateProcessor } from './station-update-processor';
 import { BusRouteInfo } from '../modules/apis/bus-route-info';
+import { BatchController } from './batch.controller';
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { BusRouteInfo } from '../modules/apis/bus-route-info';
         MongooseModule.forFeature([{ name: Station.name, schema: StationSchema }]),
         StationModule,
     ],
+    controllers: [BatchController],
     providers: [
         StationUpdateService,
         StationUpdateProcessor, 
