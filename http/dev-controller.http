@@ -3,13 +3,18 @@ POST {{endpoint}}/batch/station-update
 Content-Type: application/json
 
 {
-    "limit": 5
+    "limit": 20
 }
 
 
 
 ### 개발용 컨트롤러 : batch job status search
 GET {{endpoint}}/batch/status
+
+
+
+### 개발용 컨트롤러 : batch job status search for jobId
+GET {{endpoint}}/batch/job/17
 
 
 

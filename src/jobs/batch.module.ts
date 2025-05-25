@@ -11,7 +11,7 @@ import { BatchController } from './batch.controller';
 @Module({
     imports: [
         BullModule.registerQueue({
-            name: 'station-update-queue',
+            name: 'station-update',
         }),
         MongooseModule.forFeature([{ name: Station.name, schema: StationSchema }]),
         StationModule,

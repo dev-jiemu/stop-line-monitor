@@ -12,6 +12,10 @@ export class BusRouteInfo {
         const serviceKey = this.configService.get('publicApi.routeServiceKey')
 
         let url = `${reqUrl}/busstationservice/v2/getBusStationViaRouteListv2?serviceKey=${serviceKey}&format=json&stationId=${stationId}`
-        return await fetchApiGet<BusRouteListResponse>(url)
+        return await fetchApiGet<BusRouteListResponse>(url, undefined, {
+            timeout: 25000,
+            retries: 2,
+            logMetrics: true
+        })
     }
 }

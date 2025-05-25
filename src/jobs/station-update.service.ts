@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { StationService } from '../modules/station/station.service';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { ConfigService } from '@nestjs/config';
@@ -7,10 +6,10 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class StationUpdateService {
     private readonly logger = new Logger(StationUpdateService.name);
-    private readonly DEFAULT_BATCH_LIMIT = 500;
+    private readonly DEFAULT_BATCH_LIMIT = 100;
     
     constructor(
-        @InjectQueue('station-update-queue') private stationQueue: Queue,
+        @InjectQueue('station-update') private stationQueue: Queue,
         private readonly configService: ConfigService
     ) {
         this.setupStartJobs();
@@ -31,19 +30,19 @@ export class StationUpdateService {
             const cronSchedule = this.configService.get('batch.stationUpdateCron', '0 0 10 * * *')
             const batchLimit = this.configService.get('batch.stationUpdateLimit', this.DEFAULT_BATCH_LIMIT)
 
-            // 1. station routes update : 10AM
-            await this.stationQueue.add('update-station-routes', {
+            // 2025.05.25 메인 스케쥴러 :: 분산처리 담당
+            await this.stationQueue.add('schedule-station-updates', {
                 limit: batchLimit,
             }, {
                 repeat: {
                     cron: cronSchedule,
                 },
-                jobId: 'daily-station-update',
-                removeOnComplete: false, // 성공한 작업 이력 보존
-                removeOnFail: false,     // 실패한 작업 이력 보존
-                attempts: 3,             // 실패 시 재시도 횟수
+                jobId: 'daily-station-update-scheduler',
+                removeOnComplete: false,
+                removeOnFail: false,
+                attempts: 3,
                 backoff: {
-                    type: 'exponential', 
+                    type: 'exponential',
                     delay: 5000,
                 }
             })
@@ -62,7 +61,7 @@ export class StationUpdateService {
     async triggerStationRouteUpdate(limit: number = this.DEFAULT_BATCH_LIMIT) {
         try {
             const job = await this.stationQueue.add(
-                'update-station-routes',
+                'schedule-station-updates',
                 { limit },
                 {
                     attempts: 3,
@@ -73,20 +72,20 @@ export class StationUpdateService {
                     removeOnComplete: false,
                     removeOnFail: false,
                 }
-            )
+            );
 
-            this.logger.log(`Triggered station update job with ID: ${job.id}, limit: ${limit}`)
+            this.logger.log(`Triggered station update job with ID: ${job.id}, limit: ${limit}`);
             return { 
                 success: true, 
                 jobId: job.id,
                 status: await job.getState()
-            }
+            };
         } catch (error) {
-            this.logger.error(`Failed to trigger station update job: ${error.message}`)
+            this.logger.error(`Failed to trigger station update job: ${error.message}`);
             return { 
                 success: false, 
                 error: error.message 
-            }
+            };
         }
     }
 
