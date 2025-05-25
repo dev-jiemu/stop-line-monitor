@@ -37,6 +37,7 @@ export class PublicController {
 
         for (const element of result.BusStation[1].row) {
             const item: StationDto = {
+                stationId: element.STATION_ID,
                 stationManageNo: element.STATION_MANAGE_NO,
                 cityCode: element.SIGUN_CD,
                 cityName: element.SIGUN_NM,
@@ -44,22 +45,22 @@ export class PublicController {
                 stationLoc: element.LOCPLC_LOC,
                 latitude: element.WGS84_LAT,
                 longitude: element.WGS84_LOGT,
-            };
-            stations.push(item);
+            }
+            stations.push(item)
         }
 
         for (let page = pIndex + 1; page <= totalPages; page++) {
-            let result = await this.busStopInfo.getBusStopInformation(this.pSize, page)
+            result = await this.busStopInfo.getBusStopInformation(this.pSize, page)
 
             if (result.BusStation[0].head[1].RESULT.CODE !== "INFO-000") {
                 response.result = false
                 response.reason = result.BusStation[0].head[1].RESULT.MESSAGE
-
                 return response
             }
 
             for (const element of result.BusStation[1].row) {
                 const item: StationDto = {
+                    stationId: element.STATION_ID,
                     stationManageNo: element.STATION_MANAGE_NO,
                     cityCode: element.SIGUN_CD,
                     cityName: element.SIGUN_NM,
@@ -67,20 +68,20 @@ export class PublicController {
                     stationLoc: element.LOCPLC_LOC,
                     latitude: element.WGS84_LAT,
                     longitude: element.WGS84_LOGT,
-                };
-                stations.push(item);
+                }
+                stations.push(item)
             }
         }
 
         response.result = true
         response.data = {
-            total_count : totalCount,
-            total_pages : totalPages,
-            stations_count : stations.length,
-            stations : stations
+            total_count: totalCount,
+            total_pages: totalPages,
+            stations_count: stations.length,
+            stations: stations,
         }
 
-        return response
+        return response;
     }
 
     @Post('/bus-stop')
@@ -111,6 +112,7 @@ export class PublicController {
         for (const element of result.BusStation[1].row) {
             if (element.STATION_MANAGE_NO !== null) {
                 const item: StationDto = {
+                    stationId: element.STATION_ID,
                     stationManageNo: element.STATION_MANAGE_NO,
                     cityCode: element.SIGUN_CD,
                     cityName: element.SIGUN_NM,
@@ -138,6 +140,7 @@ export class PublicController {
             for (const element of result.BusStation[1].row) {
                 if (element.STATION_MANAGE_NO !== null) {
                     const item: StationDto = {
+                        stationId: element.STATION_ID,
                         stationManageNo: element.STATION_MANAGE_NO,
                         cityCode: element.SIGUN_CD,
                         cityName: element.SIGUN_NM,
@@ -151,6 +154,7 @@ export class PublicController {
             }
         }
 
+        // insert data
         if (stations && stations.length > 0) {
             this.stationService.createStationLists(stations).then(() => {
                 console.log('createStationLists success')

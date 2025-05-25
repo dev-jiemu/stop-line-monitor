@@ -1,0 +1,32 @@
+### 개발용 컨트롤러 : batch job check
+POST {{endpoint}}/batch/station-update
+Content-Type: application/json
+
+{
+    "limit": 20
+}
+
+
+
+### 개발용 컨트롤러 : batch job status search
+GET {{endpoint}}/batch/status
+
+
+
+### 개발용 컨트롤러 : batch job status search for jobId
+GET {{endpoint}}/batch/job/17
+
+
+
+### 개발용 컨트롤러 : bull queue 실패한 데이터 삭제처리
+DELETE {{endpoint}}/batch/failed
+
+
+
+### 개발용 컨트롤러 : bull queue 완료된 데이터 삭제처리
+DELETE {{endpoint}}/batch/completed
+
+
+
+### 개발용 컨트롤러 : bull queue 전체 이력 삭제처리
+DELETE {{endpoint}}/batch/all

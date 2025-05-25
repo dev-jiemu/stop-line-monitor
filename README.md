@@ -1,148 +1,145 @@
 ## stop-line-monitor
 #### next.js 로 연습해보는 수도권 버스정보 모니터링
 
+
+----
+#### 해야할일 정리
+1. 각 정류소별 정차하는 버스 정보 조회 ✅ 
+2. 정류소 데이터 routes 추가
+3. 노선별로 실시간 데이터 받아와서 입력하는 batch 만들기
+
+--> 여기까지 이번 branch 에서 할 일 ㅇㅂㅇ
+
 ----
 
 ##### mongo DB 설계
 ```markdown
-database : bus-info
+database : stop-line-monitor
 컬렉션으로 분할
 
-- station
-stationManageNo: 정류소 번호 (PK)
+- station (static)
+_id: stationId 
+stationManageNo: 정류소 번호
 cityCode: 도시 코드
 stationName: 정류소 이름
 routes: 정차 노선 리스트
 
-- bus
+- bus (static)
 routeId: 노선번호
 licensePlate: 차량번호
 
-- stopEvent
+- stopEvent (batch job)
 stationManageNo
 routeId
 arrivalDt: 도착
 departureDt: 출발
 ```
 
-----
+---
 
-###### 메모;;
-노트북 왔다갔다 하는 바람에 할때마다 mongo db 계정 없어서 에러남 ㅜ
-``` 
-// 없으면 계정 하나 만들어주라..ㅜㅠㅠ
-db.createUser(
-  {
-    user: "mongo",
-    pwd: "test",
-    roles: [{ role: "readWrite", db: "stop-line-monitor" }]
-  }
-)
-
-// 있는지 확인해주라..ㅠ
-show users
+#### Scheduling
 ```
-경기도 공공데이터 API : 버스정류장 리스트 sample
-```json
-    "BusStation": [
-      {
-        "head": [
-          {
-            "list_total_count": 2197
-          },
-          {
-            "RESULT": {
-              "CODE": "INFO-000",
-              "MESSAGE": "정상 처리되었습니다."
-            }
-          },
-          {
-            "api_version": "1.0"
-          }
-        ]
-      },
-      {
-        "row": [
-          {
-            "SIGUN_NM": "고양시",
-            "SIGUN_CD": "41280",
-            "STATION_NM_INFO": "백석역2번출구",
-            "STATION_ID": "219000572",
-            "STATION_MANAGE_NO": "20482",
-            "STATION_DIV_NM": "노변정류장",
-            "JURISD_INST_NM": "경기도 고양시",
-            "LOCPLC_LOC": "경기도 고양시 일산동구 백석동",
-            "ENG_STATION_NM_INFO": "Baekseok Station Exit 2",
-            "WGS84_LOGT": "126.7876333",
-            "WGS84_LAT": "37.6425"
-          },
-          {
-            "SIGUN_NM": "고양시",
-            "SIGUN_CD": "41280",
-            "STATION_NM_INFO": "잣골",
-            "STATION_ID": "219000070",
-            "STATION_MANAGE_NO": "20377",
-            "STATION_DIV_NM": "노변정류장",
-            "JURISD_INST_NM": "경기도 고양시",
-            "LOCPLC_LOC": "경기도 고양시 일산동구 성석동",
-            "ENG_STATION_NM_INFO": "Jatgol",
-            "WGS84_LOGT": "126.7933333",
-            "WGS84_LAT": "37.6876"
-          },
-          {
-            "SIGUN_NM": "고양시",
-            "SIGUN_CD": "41280",
-            "STATION_NM_INFO": "초가집.저동고교",
-            "STATION_ID": "219000111",
-            "STATION_MANAGE_NO": "20277",
-            "STATION_DIV_NM": "노변정류장",
-            "JURISD_INST_NM": "경기도 고양시",
-            "LOCPLC_LOC": "경기도 고양시 일산동구 정발산동",
-            "ENG_STATION_NM_INFO": "Chogajib, Jeodong High School",
-            "WGS84_LOGT": "126.781",
-            "WGS84_LAT": "37.6695667"
-          },
-          {
-            "SIGUN_NM": "고양시",
-            "SIGUN_CD": "41280",
-            "STATION_NM_INFO": "희망원",
-            "STATION_ID": "219000109",
-            "STATION_MANAGE_NO": "20429",
-            "STATION_DIV_NM": "노변정류장",
-            "JURISD_INST_NM": "경기도 고양시",
-            "LOCPLC_LOC": "경기도 고양시 일산동구 문봉동",
-            "ENG_STATION_NM_INFO": "Huimangwon",
-            "WGS84_LOGT": "126.82185",
-            "WGS84_LAT": "37.7028167"
-          },
-          {
-            "SIGUN_NM": "고양시",
-            "SIGUN_CD": "41280",
-            "STATION_NM_INFO": "문봉빌라단지",
-            "STATION_ID": "219000108",
-            "STATION_MANAGE_NO": "20427",
-            "STATION_DIV_NM": "노변정류장",
-            "JURISD_INST_NM": "경기도 고양시",
-            "LOCPLC_LOC": null,
-            "ENG_STATION_NM_INFO": "Munbong Villa Complex ",
-            "WGS84_LOGT": "126.8186667",
-            "WGS84_LAT": "37.7041167"
-          },
-          {
-            "SIGUN_NM": "고양시",
-            "SIGUN_CD": "41280",
-            "STATION_NM_INFO": "성석초교",
-            "STATION_ID": "219000107",
-            "STATION_MANAGE_NO": "20424",
-            "STATION_DIV_NM": "노변정류장",
-            "JURISD_INST_NM": "경기도 고양시",
-            "LOCPLC_LOC": "경기도 고양시 일산동구 문봉동",
-            "ENG_STATION_NM_INFO": "Seongseok Elementary School",
-            "WGS84_LOGT": "126.8128667",
-            "WGS84_LAT": "37.7066"
-          }
-        ]
-      }
-    ]
+Request Scheduler(BollMQ / Agenda) → Job Queue → Worker → MongoDB
+```
+---
 
+#### route lists
+- 경기데이터드림 -> 해당 사이트에서 고양시 버스정류소 리스트 가져옴
+- 정차 노선 리스트 -> 이건 공공데이터포털 API 로 가야함
+  - 정류소 경유노선 목록조회 API 로 얻을 수 있음
+- 정류소별 노선 리스트 넣을때 -> stationId 가 중복일수도 있어서 위/경도 추가 비교 필요함
+  - stationId 가 PK 인것 같긴 한데 ... 위/경도가 정확하게 올지를 모르겠어서, 일단 API 먼저 호출해보고 값 확인해야함 
+  - 경기버스정보에서 제공하는 API 페이지 기준으로 확인해본 결과 일치하는것 같음 ㅇㅂㅇ
+  
+Sample
+```
+// 버스정거장 info : 현재 mongodb 에 저장된 값
+{
+    "_id": {
+        "$oid": "680d0cec6662fe28eeb1b651"
+    },
+    "stationId": "218000317",
+    "__v": 0,
+    "cityCode": "41280",
+    "cityName": "고양시",
+    "latitude": "37.62215",
+    "longitude": "126.8375",
+    "routes": [],
+    "stationLoc": "경기도 고양시덕양구 행신동",
+    "stationManageNo": "19348",
+    "stationName": "행신초등학교(중)"
+}
+
+// gbis.go.kr 통해서 검색해보면 (search stationManageNo)
+{
+    "response": {
+        "comMsgHeader": "",
+        "msgHeader": {
+            "queryTime": "2025-04-27 22:21:01.434",
+            "resultCode": 0,
+            "resultMessage": "정상적으로 처리되었습니다."
+        },
+        "msgBody": {
+            "busStationList": {
+                "centerYn": "Y",
+                "mobileNo": " 19348", // stationManageNo
+                "regionName": "고양",
+                "stationId": 218000317,
+                "stationName": "행신초등학교(중)",
+                "x": 126.8375, // longitude
+                "y": 37.62215 // latitude
+            }
+        }
+    }
+}
+
+// stationId 기준으로 경유노선 검색해보면(일부생략)
+{
+    "response": {
+        "comMsgHeader": "",
+        "msgHeader": {
+            "queryTime": "2025-04-27 22:23:29.207",
+            "resultCode": 0,
+            "resultMessage": "정상적으로 처리되었습니다."
+        },
+        "msgBody": {
+            "busRouteList": [
+                {
+                    "regionName": "고양",
+                    "routeDestId": 101000022,
+                    "routeDestName": "숭례문",
+                    "routeId": 219000013,
+                    "routeName": 1000,
+                    "routeTypeCd": 11,
+                    "routeTypeName": "직행좌석형시내버스",
+                    "staOrder": 14
+                },
+                {
+                    "regionName": "고양",
+                    "routeDestId": 101000022,
+                    "routeDestName": "숭례문",
+                    "routeId": 218000011,
+                    "routeName": 1100,
+                    "routeTypeCd": 11,
+                    "routeTypeName": "직행좌석형시내버스",
+                    "staOrder": 26
+                } 
+                // 생략
+            ]
+        }
+    }
+}
+```
+
+4/28 :: 일일 API 호출 제한이 있어서 route list 불러오는건 batch job 으로 처리해야할듯 ㅠ
+=> 기존 cron 배치 말고 어차피 경유노선 넣은 뒤에 실시간 데이터 쌓아야하니까 bull 공부해봄
+
+---
+#### Public API List
+```markdown
+정류소명/번호 목록조회
+- https://www.gbis.go.kr/gbis2014/publicService.action?cmd=mBusStation
+
+정류소 경유노선 목록조회
+- https://www.gbis.go.kr/gbis2014/publicService.action?cmd=mBusStationRoute
 ```

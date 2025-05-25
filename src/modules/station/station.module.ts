@@ -13,7 +13,13 @@ import { Station, StationSchema } from '../../schemas/station.schema';
     ],
     controllers: [StationController],
     providers: [StationService, StationRepository],
-    exports: [StationService, StationRepository]
+    exports: [
+        StationService,
+        StationRepository,
+        MongooseModule.forFeature([
+            { name: Station.name, schema: StationSchema },
+        ]),
+    ],
 })
 
 export class StationModule {}
