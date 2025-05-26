@@ -7,52 +7,22 @@
 1. 각 정류소별 정차하는 버스 정보 조회 ✅ 
 2. 정류소 데이터 routes 추가 ✅  -> 오전 10시 100개의 데이터 업데이트
 
-
 #### Next Jobs
 1. 노선 별 실시간 위치 적재 배치
+   - 적재 처리 요청할 API 개발 필요
+   - 해당 API 요청이 왔다면 해당 노선번호 기준으로 데이터 적재 처리
+   - 적재를 요청할 플랫폼 구성 필요(그냥 간단한 모바일 UI 만들까..? 🤔)
 2. Jenkins CI/CD 구성
-3. 언제쯤 해당 노선에 도착할지 예측하는 서비스 만들기?! (근데 이거 데이터 많이 필요한데ㅠㅠ)
+3. 언제쯤 해당 노선에 도착할지 예측하는 서비스 만들기
+   - Slack 으로 알람 보내주기
+     - 주기적으로 버스 정보 노티해주는 알람
+     - 특정 날짜, 특정 시간에 출발할거라면(요청 API 필요) '이쯤 너가 정류장 오면 될것 같아!' 알려주는 알람도 괜찮을듯
 ----
 
-
-##### mongo DB 설계
-```markdown
-database : stop-line-monitor
-컬렉션으로 분할
-
-- station (static)
-_id: stationId 
-stationManageNo: 정류소 번호
-cityCode: 도시 코드
-stationName: 정류소 이름
-routes: 정차 노선 리스트
-
-- bus (static)
-routeId: 노선번호
-licensePlate: 차량번호
-
-- stopEvent (batch job)
-stationManageNo
-routeId
-arrivalDt: 도착
-departureDt: 출발
-```
-
----
-
-#### Scheduling
+#### Scheduling (Batch Job)
 ```
 Request Scheduler(BollMQ / Agenda) → Job Queue → Worker → MongoDB
 ```
----
-
-#### route lists
-- 경기데이터드림 -> 해당 사이트에서 고양시 버스정류소 리스트 가져옴
-- 정차 노선 리스트 -> 이건 공공데이터포털 API 로 가야함
-  - 정류소 경유노선 목록조회 API 로 얻을 수 있음
-- 정류소별 노선 리스트 넣을때 -> stationId 가 중복일수도 있어서 위/경도 추가 비교 필요함
-  - stationId 가 PK 인것 같긴 한데 ... 위/경도가 정확하게 올지를 모르겠어서, 일단 API 먼저 호출해보고 값 확인해야함 
-  - 경기버스정보에서 제공하는 API 페이지 기준으로 확인해본 결과 일치하는것 같음 ㅇㅂㅇ
 ---
 #### Public API List
 ```markdown
@@ -61,4 +31,7 @@ Request Scheduler(BollMQ / Agenda) → Job Queue → Worker → MongoDB
 
 정류소 경유노선 목록조회
 - https://www.gbis.go.kr/gbis2014/publicService.action?cmd=mBusStationRoute
+
+버스위치정보 조회 서비스
+- https://www.gbis.go.kr/gbis2014/publicService.action?cmd=mBusLocation
 ```
