@@ -4,10 +4,22 @@ import { Document } from 'mongoose'
 @Schema()
 export class Bus {
     @Prop({ required: true, unique: true })
-    routeId: string
+    routeId: number
 
-    @Prop()
-    licensePlate: string
+    @Prop({ required: true })
+    routeName: string
+
+    @Prop({ required: true })
+    routeDestId: number
+
+    @Prop({ default: Date.now })
+    createdDt: Date
+
+    @Prop({ default: Date.now })
+    updatedDt: Date
+
+    @Prop({ default: false })
+    isTracking: boolean
 }
 
 export const BusSchema = SchemaFactory.createForClass(Bus)

@@ -4,22 +4,22 @@ import { Document } from 'mongoose'
 @Schema()
 export class StopEvent {
     @Prop({ required: true, unique: true })
-    eventId: string
+    eventId: string // `${routeId}_${vehId}_${stationId}_${timestamp}` 형태
 
-    @Prop()
-    stationManageNo: string
+    @Prop({ required: true })
+    routeId: number
 
-    @Prop()
-    routeId: string
+    @Prop({ required: true })
+    vehId: number
 
-    @Prop()
-    arrivalDt: Date
+    @Prop({ required: true })
+    stationId: string
 
-    @Prop()
-    departureDt: Date
-
-    @Prop()
+    @Prop({ default: Date.now })
     createdDt: Date
+
+    @Prop()
+    remainSeatCnt?: number
 }
 
 export const StopEventSchema = SchemaFactory.createForClass(StopEvent)
