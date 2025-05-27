@@ -7,6 +7,7 @@ import { Station, StationSchema } from '../schemas/station.schema';
 import { StationUpdateProcessor } from './station-update-processor';
 import { BusRouteInfo } from '../modules/apis/bus-route-info';
 import { BatchController } from './batch.controller';
+import { BusTrackingService } from './bus-tracking.service';
 
 @Module({
     imports: [
@@ -20,8 +21,9 @@ import { BatchController } from './batch.controller';
     providers: [
         StationUpdateService,
         StationUpdateProcessor, 
-        BusRouteInfo
+        BusRouteInfo,
+        BusTrackingService,
     ],
-    exports: [StationUpdateService],
+    exports: [StationUpdateService, BusTrackingService],
 })
 export class BatchModule {}
