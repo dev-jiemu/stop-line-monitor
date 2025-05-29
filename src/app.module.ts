@@ -13,10 +13,14 @@ import { BusModule } from './modules/bus/bus.module';
 
 @Module({
     imports: [
-        ConfigModule.forRoot({ load: [config], isGlobal: true }),
+        ConfigModule.forRoot({
+            load: [config], isGlobal: true }),
         MongooseModule.forRootAsync({
             useFactory: async (configService: ConfigService) => ({
                 uri: configService.get<string>('mongo.url'),
+                maxPoolSize: 20,
+                minPoolSize: 10,
+                maxIdleTimeMS: 30000,
             }),
             inject: [ConfigService],
         }),

@@ -1,7 +1,9 @@
 import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
-import { Queue } from 'bull';
+import { Job, Queue } from 'bull';
 import { BusService } from '../modules/bus/bus.service';
+import { BusDto } from '../modules/bus/dto/bus-dto';
+import { BusRouteInfo } from '../modules/apis/bus-route-info';
 
 
 @Processor('bus-tracking')
@@ -11,11 +13,12 @@ export class BusTrackingProcessor {
     constructor(
             @InjectQueue('bus-tracking') private busTrackingQueue: Queue,
             private readonly busService: BusService,
+            private readonly busRouteInfo: BusRouteInfo,
     ) {
     }
 
     @Process('realtime-bus-tracking')
-    async processRealtimeBusTracking() {
+    async processRealtimeBusTracking(job: Job<{}>) {
         this.logger.log(`Processing realtime bus tracking...`)
 
         try {
@@ -23,10 +26,16 @@ export class BusTrackingProcessor {
             this.logger.log(`Realtime bus tracking list: ${busTrackingList.length}`)
 
             // routeId 별로 '별도 배치 처리'
+            let batchIndex = 0;
+
             const jobs = busTrackingList.map(async (bus) => {
                 return await this.busTrackingQueue.add(
                     'realtime-bus-tracking-by-route',
-                    { bus },
+                    {
+                        parentJobId: job.id,
+                        bus: bus,
+                        batchIndex: batchIndex + 1,
+                    },
                     {
                         removeOnComplete: false,
                         removeOnFail: false,
@@ -48,9 +57,36 @@ export class BusTrackingProcessor {
         }
     }
 
-    @Process('realtime-bus-tracking-by-route')
-    async processRealtimeBusTrackingByRoute(job: any) {
+    @Process({ name: 'realtime-bus-tracking-by-route', concurrency: 10})
+    async processRealtimeBusTrackingByRoute(job: Job<{
+        parentJobId: string,
+        bus: BusDto,
+        batchIndex: number,
+    }>) {
+        const { parentJobId, bus, batchIndex } = job.data;
+        const startDate = Date.now();
+
         this.logger.log(`Processing realtime bus tracking by route...`)
+
+        try {
+            // TODO : realtime-bus-data API calls
+            const locationResponse = await this.busRouteInfo.getBusLocationList(bus.routeId);
+
+
+        } catch (error) {
+            this.logger.error(`Error processing station ${bus.routeId}`, error, {
+                jobId: job.id,
+                parentJobId,
+                bus: bus,
+            });
+            return {
+                success: false,
+                error: {
+                    routeId: bus.routeId,
+                    reason: error.message
+                }
+            };
+        }
     }
 
 }

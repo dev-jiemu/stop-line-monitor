@@ -3,7 +3,7 @@ import { StationService } from '../modules/station/station.service';
 import { Job, Queue } from 'bull';
 import { BusRouteInfo } from '../modules/apis/bus-route-info';
 import { StationDto, StationRouteDto } from '../modules/station/dto/station-dto';
-import { BusRouteListResponse } from '../interfaces/bus-route-list-response';
+import { BusRouteListResponse } from '../modules/apis/interfaces/bus-route-list-response';
 import { Logger } from '@nestjs/common';
 
 @Processor('station-update')
