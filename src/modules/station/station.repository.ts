@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Station, StationDocument } from '../../schemas/station.schema';
+import { Station, StationDocument } from './schemas/station.schema';
 import { HydratedDocument, Model } from 'mongoose';
-import { StationDto } from '../../models/station-dto'
+import { StationDto } from './dto/station-dto'
 
 @Injectable()
 export class StationRepository {

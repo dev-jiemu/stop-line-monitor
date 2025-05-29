@@ -3,7 +3,7 @@ import { StationService } from './station.service';
 import { StationRepository } from './station.repository';
 import { StationController } from './station.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Station, StationSchema } from '../../schemas/station.schema';
+import { Station, StationSchema } from './schemas/station.schema';
 
 @Module({
     imports: [

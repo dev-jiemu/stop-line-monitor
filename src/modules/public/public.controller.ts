@@ -1,7 +1,7 @@
 import { Controller, Get, Post } from '@nestjs/common';
 import { type BaseResponse } from '../../models/base/base-response'
 import { BusStopInfo } from '../apis/bus-stop-info'
-import { type StationDto } from '../../models/station-dto';
+import { type StationDto } from '../station/dto/station-dto';
 import { StationService } from '../station/station.service';
 
 @Controller('public')

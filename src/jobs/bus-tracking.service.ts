@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class BusTrackingService {
@@ -9,7 +9,7 @@ export class BusTrackingService {
 
     constructor(
             @InjectQueue('bus-tracking') private busTrackingQueue: Queue,
-            private readonly configService: ConfigService
+            private readonly configService: ConfigService,
     ) {
         this.setupStartJobs();
     }
@@ -47,7 +47,7 @@ export class BusTrackingService {
     }
 
     // trigger 실행
-    async realtimeBusTracking() {
+    async triggerRealtimeBusTracking() {
         try {
             const job = await this.busTrackingQueue.add(
                 'realtime-bus-tracking',

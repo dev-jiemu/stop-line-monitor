@@ -9,6 +9,7 @@ import { StationModule } from './modules/station/station.module';
 import { PublicModule } from './modules/public/public.module';
 import { BullModule } from '@nestjs/bull';
 import { BatchModule } from './jobs/batch.module';
+import { BusModule } from './modules/bus/bus.module';
 
 @Module({
     imports: [
@@ -29,6 +30,7 @@ import { BatchModule } from './jobs/batch.module';
         StationModule,
         PublicModule,
         BatchModule,
+        BusModule,
     ],
     controllers: [AppController],
     providers: [AppService],
