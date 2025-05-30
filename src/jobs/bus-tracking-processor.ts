@@ -5,7 +5,6 @@ import { BusService } from '../modules/bus/bus.service';
 import { BusDto } from '../modules/bus/dto/bus-dto';
 import { BusRouteInfo } from '../modules/apis/bus-route-info';
 
-
 @Processor('bus-tracking')
 export class BusTrackingProcessor {
     private readonly logger = new Logger(BusTrackingProcessor.name);
@@ -26,6 +25,7 @@ export class BusTrackingProcessor {
             this.logger.log(`Realtime bus tracking list: ${busTrackingList.length}`)
 
             // routeId 별로 '별도 배치 처리'
+            // routeId를 활용해서 index 잡을까...?
             let batchIndex = 0;
 
             const jobs = busTrackingList.map(async (bus) => {
@@ -69,9 +69,9 @@ export class BusTrackingProcessor {
         this.logger.log(`Processing realtime bus tracking by route...`)
 
         try {
-            // TODO : realtime-bus-data API calls
             const locationResponse = await this.busRouteInfo.getBusLocationList(bus.routeId);
 
+            // TODO : insert realtime data
 
         } catch (error) {
             this.logger.error(`Error processing station ${bus.routeId}`, error, {

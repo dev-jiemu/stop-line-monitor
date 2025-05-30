@@ -218,8 +218,7 @@ export class StationUpdateProcessor {
                     const routeResponse = await this.busRouteInfo.getBusRouteList(station.stationId);
                     const processingTime = Date.now() - stationStartTime;
 
-                    // response object type check
-                    if (!this.isValidBusRouteResponse(routeResponse)) {
+                    if (!routeResponse) {
                         this.logger.error(`Invalid response structure for station ${station.stationId}`,
                             new Error('Invalid response structure'), {
                                 jobId: job.id,
@@ -374,15 +373,5 @@ export class StationUpdateProcessor {
             });
             throw error;
         }
-    }
-
-
-    /**
-     * isValidBusRouteResponse : response 객체 타입체크
-     * @param response
-     * @private
-     */
-    private isValidBusRouteResponse(response: any): response is BusRouteListResponse {
-        return response && response.response && response.response.msgHeader && typeof response.response.msgHeader.resultCode === 'number'
     }
 }

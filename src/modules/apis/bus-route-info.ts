@@ -3,12 +3,20 @@ import { ConfigService } from '@nestjs/config';
 import { fetchApiGet } from './axios-client';
 import { BusRouteListResponse } from './interfaces/bus-route-list-response';
 import { BusLocationListResponse } from './interfaces/bus-location-list-response';
+import { ValidateApiResponse } from './decorators/api-response-validator.decorator';
 
 @Injectable()
 export class BusRouteInfo {
     constructor(private readonly configService: ConfigService) {}
 
-    getBusRouteList = async (stationId: string) => {
+    // 데코레이터 적용하려면 함수형 형태를 쓸 수 없다고...?
+    @ValidateApiResponse((response: any): response is BusRouteListResponse => {
+        return response &&
+                response.response &&
+                response.response.msgHeader &&
+                typeof response.response.msgHeader.resultCode === 'number';
+    })
+    async getBusRouteList(stationId: string): Promise<BusRouteListResponse | null> {
         const reqUrl = this.configService.get('publicApi.busRouteServiceUrl')
         const serviceKey = this.configService.get('publicApi.routeServiceKey')
 
@@ -20,6 +28,13 @@ export class BusRouteInfo {
         })
     }
 
+    // TODO: decorator 적용 필요
+    // @ValidateApiResponse((response: any): response is BusLocationListResponse => {
+    //     return response &&
+    //             response.response &&
+    //             response.response.msgHeader &&
+    //             typeof response.response.msgHeader.resultCode === 'number';
+    // })
     getBusLocationList = async (routeId: number) => {
         const reqUrl = this.configService.get('publicApi.busRouteServiceUrl');
         const serviceKey = this.configService.get('publicApi.routeServiceKey');
