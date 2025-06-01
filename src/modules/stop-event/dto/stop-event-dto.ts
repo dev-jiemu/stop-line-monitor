@@ -1,6 +1,6 @@
 export class StopEventDto {
-    stationManageNo: string
-    routeId: string
-    arrivalDt: Date
-    departureDt: Date
+    routeId: number
+    vehId: number
+    stationId: number
+    remainSeatCnt?: number
 }

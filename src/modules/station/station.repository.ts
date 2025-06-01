@@ -13,6 +13,10 @@ export class StationRepository {
         return await this.stationModel.find().sort({updatedDt: 1}).limit(limit).exec()
     }
 
+    async getStationOne(stationId: string) : Promise<HydratedDocument<StationDocument, {}, {}>> {
+        return await this.stationModel.findOne({ stationId: stationId }).exec()
+    }
+
     async upsertStationOne(stationDto: StationDto) {
         const now = new Date();
 

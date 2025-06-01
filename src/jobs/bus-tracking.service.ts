@@ -78,4 +78,6 @@ export class BusTrackingService {
         }
     }
 
+    // TODO : 작업상태 로깅용 추가
+
 }

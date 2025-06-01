@@ -4,6 +4,8 @@ import { Job, Queue } from 'bull';
 import { BusService } from '../modules/bus/bus.service';
 import { BusDto } from '../modules/bus/dto/bus-dto';
 import { BusRouteInfo } from '../modules/apis/bus-route-info';
+import { StopEventService } from '../modules/stop-event/stop-event.service';
+import { StopEventDto } from '../modules/stop-event/dto/stop-event-dto';
 
 @Processor('bus-tracking')
 export class BusTrackingProcessor {
@@ -13,6 +15,7 @@ export class BusTrackingProcessor {
             @InjectQueue('bus-tracking') private busTrackingQueue: Queue,
             private readonly busService: BusService,
             private readonly busRouteInfo: BusRouteInfo,
+            private readonly stopEventService: StopEventService,
     ) {
     }
 
@@ -70,11 +73,67 @@ export class BusTrackingProcessor {
 
         try {
             const locationResponse = await this.busRouteInfo.getBusLocationList(bus.routeId);
+            const processingTime = Date.now() - startDate;
 
-            // TODO : insert realtime data
+            if (!locationResponse) {
+                this.logger.error(`Invalid response structure for route ${bus.routeId}`,
+                    new Error('Invalid response structure'), {
+                        jobId: job.id,
+                        routeId: bus.routeId,
+                        processingTimeMs: processingTime,
+                    }
+                );
+                return {
+                    success: false,
+                    error: {
+                        routeId: bus.routeId,
+                        reason: 'Invalid response structure',
+                        processingTime
+                    }
+                }
+            }
+
+            if (locationResponse.response.msgHeader.resultCode !== 0) {
+                this.logger.error(`Failed to get bus location list for route ${bus.routeId}: ${locationResponse.response.msgHeader.resultMessage}`,
+                    new Error(locationResponse.response.msgHeader.resultMessage), {
+                        jobId: job.id,
+                        routeId: bus.routeId,
+                        resultCode: locationResponse.response.msgHeader.resultCode,
+                        processingTimeMs: processingTime,
+                    }
+                );
+                return {
+                    success: false,
+                    error: {
+                        routeId: bus.routeId,
+                        reason: locationResponse.response.msgHeader.resultMessage,
+                        processingTime
+                    }
+                }
+            }
+
+            if (locationResponse.response.msgBody?.busLocationList?.length > 0) {
+                const locationList = locationResponse.response.msgBody.busLocationList;
+
+                let stopEventLists = [];
+                for(const element of locationList) {
+                    let stopEvent: StopEventDto = {
+                        routeId: element.routeId,
+                        vehId: element.vehId,
+                        stationId: element.stationId,
+                        remainSeatCnt: element.remainSeatCnt,
+                    }
+
+                    stopEventLists.push(stopEvent)
+                }
+
+                await this.stopEventService.createStopEventLists(stopEventLists)
+            }
+
+            // TODO : 성능 메트릭 로깅 추가
 
         } catch (error) {
-            this.logger.error(`Error processing station ${bus.routeId}`, error, {
+            this.logger.error(`Error processing bus-tracking ::  ${bus.routeId}`, error, {
                 jobId: job.id,
                 parentJobId,
                 bus: bus,

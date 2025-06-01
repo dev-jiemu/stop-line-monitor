@@ -35,3 +35,7 @@ export function ValidateApiResponse<T>(
         };
     };
 }
+
+export const BUS_API_COMMON_VALIDATOR = (response: any) => { // 어차피 헤더 같은데 걍 묶어줌
+    return response && response.response && response.response.msgHeader && typeof response.response.msgHeader.resultCode === 'number';
+};
