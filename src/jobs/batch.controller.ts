@@ -15,7 +15,7 @@ export class BatchController {
      */
     @Post('station-update')
     async triggerStationUpdate(@Body() body: { limit?: number }) {
-        const limit = body.limit || 500;
+        const limit = body.limit || 50;
         return await this.stationUpdateService.triggerStationRouteUpdate(limit);
     }
 

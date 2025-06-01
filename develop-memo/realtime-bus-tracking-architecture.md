@@ -172,23 +172,23 @@ export class Bus {
 #### API 개발 초안
 1. 노선 추적 관리 API 
 - 1.1 노선 추적 시작
-`POST /bus-tracking/routes/:routeName`
+`POST /bus/tracking/routes/:routeName`
   - 기능: 특정 노선에 대한 실시간 위치 데이터 수집 시작
   - 유효성 검증: 고양시 경유 노선 여부 확인 (Station 컬렉션의 routes 배열 매칭)
   - 처리 로직: Bus 컬렉션에서 해당 노선의 isTracking을 true로 업데이트 또는 insert
   - 에러 처리: 고양시 미경유 노선 시 400 Bad Request 반환
 
-- 노선 추적 중단 `DELETE /bus-tracking/routes/:routeName`
+- 노선 추적 중단 `DELETE /bus/tracking/routes/:routeName`
   - 기능: 특정 노선에 대한 실시간 위치 데이터 수집 중단
   - 처리 로직: 해당 노선의 isTracking을 false로 업데이트
 
 2. 실시간 위치 조회 API
-- 노선별 현재 버스 위치 조회 `GET /bus-tracking/routes/:routeName/current`
+- 노선별 현재 버스 위치 조회 `GET /bus/tracking/routes/:routeName/current`
   - 기능: 특정 노선의 현재 운행 중인 모든 버스의 실시간 위치 정보 제공
   - 데이터: 차량별 현재 위치, 혼잡도, 잔여 좌석 수, 운행 상태
   - 외부 API 호출: 공공데이터 버스 위치 API 실시간 호출
 
-- 정류장별 도착 예정 버스 조회 `GET /bus-tracking/stations/:stationId/arrivals`
+- 정류장별 도착 예정 버스 조회 `GET /bus/tracking/stations/:stationId/arrivals`
   - 기능: 특정 정류장에 도착 예정인 버스들의 정보 제공
   - 데이터: 노선별 도착 예정 시간, 혼잡도, 잔여 좌석 수
 
@@ -197,6 +197,7 @@ export class Bus {
 - 실시간 위치 데이터 수집 배치
   - 실행 주기: 10분 간격 (@Cron('*/10 * * * *'))
   - 실행 시간: 24시간 연중무휴
+    - 버스 막차시간 ~ 버스 첫차시간 사이엔 데이터 조회 안해도 됨 ** 날짜 체크 확인 필요
   - timeout: API 호출당 30초 제한
 
 - 배치 처리 플로우

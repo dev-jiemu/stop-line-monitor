@@ -4,6 +4,7 @@ import { fetchApiGet } from './axios-client';
 import { BusRouteListResponse } from './interfaces/bus-route-list-response';
 import { BusLocationListResponse } from './interfaces/bus-location-list-response';
 import { BUS_API_COMMON_VALIDATOR, ValidateApiResponse } from './decorators/api-validator';
+import { BusRouteInfoResponse } from './interfaces/bus-route-info-response';
 
 @Injectable()
 export class BusRouteInfo {
@@ -33,6 +34,21 @@ export class BusRouteInfo {
 
         let url = `${reqUrl}/buslocationservice/v2/getBusLocationListv2?serviceKey=${serviceKey}&format=json&routeId=${routeId}`
         return await fetchApiGet<BusLocationListResponse>(url, undefined, {
+            timeout: 25000,
+            retries: 2,
+            logMetrics: true
+        })
+    }
+
+    @ValidateApiResponse((response: any): response is BusRouteInfoResponse => {
+        return BUS_API_COMMON_VALIDATOR(response);
+    })
+    async getBusRouteInfo(routeId: number) : Promise<BusRouteInfoResponse | null> {
+        const reqUrl = this.configService.get('publicApi.busRouteServiceUrl');
+        const serviceKey = this.configService.get('publicApi.routeServiceKey');
+
+        let url = `${reqUrl}/busrouteservice/v2/getBusRouteInfoItemv2?serviceKey=${serviceKey}&format=json&routeId=${routeId}`
+        return await fetchApiGet<BusRouteInfoResponse>(url, undefined, {
             timeout: 25000,
             retries: 2,
             logMetrics: true
