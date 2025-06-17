@@ -1,8 +1,8 @@
 import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job, Queue } from 'bull';
-import { BusService } from '../modules/bus/bus.service';
-import { BusDto } from '../modules/bus/dto/bus-dto';
+import { BusTrackingService } from '../modules/bus-tracking/bus-tracking.service';
+import { BusDto } from '../modules/bus-tracking/dto/bus-dto';
 import { BusRouteInfo } from '../modules/apis/bus-route-info';
 import { StopEventService } from '../modules/stop-event/stop-event.service';
 import { StopEventDto } from '../modules/stop-event/dto/stop-event-dto';
@@ -13,7 +13,7 @@ export class BusTrackingProcessor {
 
     constructor(
             @InjectQueue('bus-tracking') private busTrackingQueue: Queue,
-            private readonly busService: BusService,
+            private readonly busService: BusTrackingService,
             private readonly busRouteInfo: BusRouteInfo,
             private readonly stopEventService: StopEventService,
     ) {

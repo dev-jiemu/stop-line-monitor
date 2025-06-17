@@ -17,6 +17,15 @@ export class StationRepository {
         return await this.stationModel.findOne({ stationId: stationId }).exec()
     }
 
+    async getStationWithRouteName(stationId: string, routeName: string): Promise<HydratedDocument<StationDocument, {}, {}> | null> {
+        return await this.stationModel.findOne({
+            stationId: stationId,
+            routes: {
+                $elemMatch: { routeName: routeName }
+            }
+        }).exec();
+    }
+
     async upsertStationOne(stationDto: StationDto) {
         const now = new Date();
 

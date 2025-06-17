@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { BusRepository } from './bus.repository';
+import { BusTrackingRepository } from './bus-tracking.repository';
 import { BusDto } from './dto/bus-dto';
+import { BusTrackingDto } from './dto/bus-tracking.dto';
+import { StationDto } from '../station/dto/station-dto';
 
 @Injectable()
-export class BusService {
-    constructor(private readonly busRepository: BusRepository) {}
+export class BusTrackingService {
+    constructor(private readonly busRepository: BusTrackingRepository) {}
 
     async createOneBus(busDto: BusDto) {
         await this.busRepository.upsertBusOne(busDto)
@@ -14,6 +16,12 @@ export class BusService {
         await this.busRepository.upsertBusOne(busDto)
     }
 
+    async createBusTracking(busTrackingDto: BusTrackingDto, stationDto: StationDto) {
+
+    }
+
+
+    // TODO : update fix
     async getBusListForRealtimeBatch() : Promise<BusDto[]> {
         const busDtos: BusDto[] = []
         let busTrackingList = await this.busRepository.findAllTracking()

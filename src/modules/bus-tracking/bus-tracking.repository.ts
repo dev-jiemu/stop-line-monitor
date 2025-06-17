@@ -1,23 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Bus, BusDocument } from './schemas/bus.schema';
+import { BusTracking, BusDocument } from './schemas/bus-tracking.schema';
 import { BusDto } from './dto/bus-dto';
 
 @Injectable()
-export class BusRepository {
+export class BusTrackingRepository {
     constructor(
-            @InjectModel(Bus.name) private readonly busModel: Model<BusDocument>
+            @InjectModel(BusTracking.name) private readonly busTrackingModel: Model<BusDocument>
     ) {}
 
-    async findAllTracking() : Promise<Bus[]> {
-        return await this.busModel.find({ isTracking: true }).exec()
+    async findAllTracking() : Promise<BusTracking[]> {
+        return await this.busTrackingModel.find({ isActive: true }).exec()
     }
 
     async upsertBusOne(busDto: BusDto) {
         const now = new Date();
 
-        await this.busModel.findOneAndUpdate(
+        await this.busTrackingModel.findOneAndUpdate(
                 { routeId: busDto.routeId },
                 {
                     $set: {

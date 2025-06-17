@@ -14,6 +14,10 @@ export class StationService {
         await this.stationRepository.upsertStationMany(stations)
     }
 
+    async getStationWithRouteName(stationId: string, routeName: string) : Promise<StationDto> {
+        return await this.stationRepository.getStationWithRouteName(stationId, routeName)
+    }
+
     async getStationListForBatch(limit: number): Promise<StationDto[]> {
         let stations = await this.stationRepository.getStationListForBatch(limit);
         const stationDtos: StationDto[] = []

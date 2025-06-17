@@ -2,7 +2,7 @@ import { StationService } from '../src/modules/station/station.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { StationRepository } from '../src/modules/station/station.repository';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Station, StationSchema } from '../src/schemas/station.schema';
+import { Station, StationSchema } from '../src/modules/station/schemas/station.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import testConfig from './test.config';
 

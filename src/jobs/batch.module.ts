@@ -6,7 +6,7 @@ import { BusRouteInfo } from '../modules/apis/bus-route-info';
 import { BatchController } from './batch.controller';
 import { StationModule } from '../modules/station/station.module';
 import { StopEventModule } from '../modules/stop-event/stop-event.module';
-import { BusModule } from '../modules/bus/bus.module';
+import { BusTrackingModule } from '../modules/bus-tracking/bus-tracking.module';
 import { BusTrackingService } from './bus-tracking.service';
 import { BusTrackingProcessor } from './bus-tracking-processor';
 
@@ -18,7 +18,7 @@ import { BusTrackingProcessor } from './bus-tracking-processor';
         BullModule.registerQueue({
            name: 'bus-tracking',
         }),
-        StationModule, StopEventModule, BusModule,
+        StationModule, StopEventModule, BusTrackingModule,
     ],
     controllers: [BatchController],
     providers: [
