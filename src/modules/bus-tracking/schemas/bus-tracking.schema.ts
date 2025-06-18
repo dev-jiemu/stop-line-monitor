@@ -30,12 +30,12 @@ export class BusTracking {
     @Prop({ default: true })
     isActive: boolean
 
-    // 멀티유저면 등록할 필요 있을듯
+    // 멀티유저면 등록할 필요 있을듯 (지금은 제외)
     @Prop()
     userId? :string
 
     @Prop()
-    notificationTime?: string[] // "10", "12", "13" 형태
+    notificationTime?: string[] // "07", "08", "11", "18"
 
     // 메모
     @Prop()

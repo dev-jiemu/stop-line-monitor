@@ -14,7 +14,7 @@ export class StationService {
         await this.stationRepository.upsertStationMany(stations)
     }
 
-    async getStationWithRouteName(stationId: string, routeName: string) : Promise<StationDto> {
+    async getStationWithRouteName(stationId: string, routeName: string) {
         return await this.stationRepository.getStationWithRouteName(stationId, routeName)
     }
 

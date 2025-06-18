@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BusTracking, BusDocument } from './schemas/bus-tracking.schema';
-import { BusDto } from './dto/bus-dto';
+import { BusTrackingDto } from './dto/bus-tracking.dto';
 
 @Injectable()
 export class BusTrackingRepository {
@@ -14,18 +14,27 @@ export class BusTrackingRepository {
         return await this.busTrackingModel.find({ isActive: true }).exec()
     }
 
-    async upsertBusOne(busDto: BusDto) {
+    async upsertBusTracking(busTrackingDto: BusTrackingDto, routeDestId: number, targetStationId: string, targetStationName?: string) {
         const now = new Date();
+        const trackingKey = `${busTrackingDto.routeName}-${targetStationId}`;
 
         await this.busTrackingModel.findOneAndUpdate(
-                { routeId: busDto.routeId },
+                { 
+                    trackingKey: trackingKey
+                },
                 {
                     $set: {
-                        ...busDto,
+                        trackingKey,
+                        routeId: busTrackingDto.routeId,
+                        routeName: busTrackingDto.routeName,
+                        routeDestId,
+                        targetStationId,
+                        ...(targetStationName && { targetStationName }),
+                        ...(busTrackingDto.notificationTime && { notificationTime: busTrackingDto.notificationTime }),
                         updatedDt: now,
                     },
                     $setOnInsert: {
-                        isTracking: false, // default false
+                        isActive: true, // 등록 요청이니까 default true
                         createdDt: now,
                     }
                 },

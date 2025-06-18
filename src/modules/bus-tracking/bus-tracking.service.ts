@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { BusTrackingRepository } from './bus-tracking.repository';
-import { BusDto } from './dto/bus-dto';
 import { BusTrackingDto } from './dto/bus-tracking.dto';
 import { StationDto } from '../station/dto/station-dto';
 
@@ -8,34 +7,36 @@ import { StationDto } from '../station/dto/station-dto';
 export class BusTrackingService {
     constructor(private readonly busRepository: BusTrackingRepository) {}
 
-    async createOneBus(busDto: BusDto) {
-        await this.busRepository.upsertBusOne(busDto)
+    async createBusTracking(busTrackingDto: BusTrackingDto, station: any) {
+        // routes 배열에서 해당 routeName과 일치하는 route 찾기
+        const matchedRoute = station.routes?.find(route => route.routeName === busTrackingDto.routeName);
+        
+        if (!matchedRoute) {
+            throw new Error(`Route ${busTrackingDto.routeName} not found in station ${station.stationId}`);
+        }
+
+        await this.busRepository.upsertBusTracking(
+            busTrackingDto, 
+            matchedRoute.routeDestId, 
+            station.stationId, 
+            station.stationName
+        );
     }
 
-    async updateOneBus(busDto: BusDto) {
-        await this.busRepository.upsertBusOne(busDto)
-    }
-
-    async createBusTracking(busTrackingDto: BusTrackingDto, stationDto: StationDto) {
-
-    }
-
-
-    // TODO : update fix
-    async getBusListForRealtimeBatch() : Promise<BusDto[]> {
-        const busDtos: BusDto[] = []
+    async getBusTrackingListForRealtimeBatch() : Promise<BusTrackingDto[]> {
+        const busTrackingDtos: BusTrackingDto[] = []
         let busTrackingList = await this.busRepository.findAllTracking()
         if (busTrackingList !== undefined && busTrackingList.length > 0) {
-            for(const bus of busTrackingList) {
-                const busDto = new BusDto()
-                busDto.routeId = bus.routeId
-                busDto.routeName = bus.routeName
-                busDto.routeDestId = bus.routeDestId
+            for(const busTracking of busTrackingList) {
+                const busTrackingDto = new BusTrackingDto()
+                busTrackingDto.routeId = busTracking.routeId
+                busTrackingDto.routeName = busTracking.routeName
+                busTrackingDto.stationId = busTracking.targetStationId
 
-                busDtos.push(busDto)
+                busTrackingDtos.push(busTrackingDto)
             }
         }
 
-        return busDtos
+        return busTrackingDtos
     }
 }

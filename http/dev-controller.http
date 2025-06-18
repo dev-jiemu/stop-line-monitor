@@ -3,7 +3,7 @@ POST {{endpoint}}/batch/station-update
 Content-Type: application/json
 
 {
-    "limit": 20
+    "limit": 200
 }
 
 
@@ -14,7 +14,7 @@ GET {{endpoint}}/batch/status
 
 
 ### 개발용 컨트롤러 : batch job status search for jobId
-GET {{endpoint}}/batch/job/17
+GET {{endpoint}}/batch/job/72
 
 
 
@@ -35,3 +35,18 @@ DELETE {{endpoint}}/batch/all
 
 ### 개발용 컨트롤러 : 정류장 노선 업데이트 배치 수동요청
 POST {{endpoint}}/batch/bus-tracking
+Content-Type: application/json
+
+
+
+
+### 개발용 컨트롤러 : 정류장 노선 트래킹 수동 요청
+POST {{endpoint}}/bus/tracking
+Content-Type: application/json
+
+{
+    "stationId": "218000165",
+    "routeId": 219000006,
+    "routeName": "1082",
+    "notificationTime": ["09", "10", "11"]
+}

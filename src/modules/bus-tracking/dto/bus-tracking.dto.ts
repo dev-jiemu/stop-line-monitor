@@ -1,4 +1,6 @@
 export class BusTrackingDto {
-    routeName: string;
-    stationId: string;
+    routeName: string
+    routeId: number
+    stationId: string
+    notificationTime?: string[]
 }
