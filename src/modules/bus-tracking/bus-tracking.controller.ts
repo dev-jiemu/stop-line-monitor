@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, HttpException, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Get, Post, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { BaseResponse } from '../../models/base/base-response';
 import { BusTrackingService } from './bus-tracking.service';
 import { BusTrackingDto } from './dto/bus-tracking.dto';
@@ -7,6 +7,8 @@ import { StationService } from '../station/station.service';
 
 @Controller('bus')
 export class BusTrackingController {
+    private readonly logger = new Logger(BusTrackingController.name);
+
     constructor(
             private readonly busTrackingService: BusTrackingService,
             private readonly busRouteInfo: BusRouteInfo,
@@ -31,6 +33,8 @@ export class BusTrackingController {
                 throw new HttpException('station info is not found', HttpStatus.BAD_REQUEST);
             }
 
+            this.logger.log(`createBusTrackingRoute :: search station info : ${station}`)
+
             const busTrackingDto: BusTrackingDto = {
                 routeName: body.routeName,
                 routeId: body.routeId,
@@ -54,6 +58,8 @@ export class BusTrackingController {
                 }
             };
 
+
+            this.logger.log(`createBusTrackingRoute :: response : ${response}`)
             return response;
 
         } catch (error) {

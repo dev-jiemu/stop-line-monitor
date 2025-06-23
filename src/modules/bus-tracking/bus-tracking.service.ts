@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { BusTrackingRepository } from './bus-tracking.repository';
 import { BusTrackingDto } from './dto/bus-tracking.dto';
-import { StationDto } from '../station/dto/station-dto';
 
 @Injectable()
 export class BusTrackingService {
+    private readonly logger = new Logger(BusTrackingService.name)
+
     constructor(private readonly busRepository: BusTrackingRepository) {}
 
     async createBusTracking(busTrackingDto: BusTrackingDto, station: any) {
@@ -14,6 +15,8 @@ export class BusTrackingService {
         if (!matchedRoute) {
             throw new Error(`Route ${busTrackingDto.routeName} not found in station ${station.stationId}`);
         }
+
+        this.logger.log(`createBusTraking :: matchedRoute = ${matchedRoute}`)
 
         await this.busRepository.upsertBusTracking(
             busTrackingDto, 

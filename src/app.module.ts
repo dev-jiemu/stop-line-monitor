@@ -24,11 +24,17 @@ import { BusTrackingModule } from './modules/bus-tracking/bus-tracking.module';
             }),
             inject: [ConfigService],
         }),
-        BullModule.forRoot({
-            redis: {
-                host: 'localhost',
-                port: 6379,
-            },
+        BullModule.forRootAsync({
+            useFactory: async (configService: ConfigService) => ({
+                redis: {
+                    host: configService.get<string>('redis.host', 'localhost'),
+                    port: configService.get<number>('redis.port', 6379),
+                    maxRetriesPerRequest: 3,
+                    retryDelayOnFailover: 100,
+                    enableReadyCheck: false
+                },
+            }),
+            inject: [ConfigService],
         }),
         ApiModule,
         StationModule,
