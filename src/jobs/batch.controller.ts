@@ -1,9 +1,13 @@
-import { Controller, Post, Get, Body, Param, Query, Delete } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, Delete } from '@nestjs/common';
 import { StationUpdateService } from './station-update.service';
+import { BusTrackingService } from './bus-tracking.service';
 
 @Controller('batch')
 export class BatchController {
-    constructor(private readonly stationUpdateService: StationUpdateService) {}
+    constructor(
+            private readonly stationUpdateService: StationUpdateService,
+            private readonly busTrackingService: BusTrackingService
+    ) {}
 
     /**
      * 정류장 노선 업데이트 배치 작업 수동 트리거
@@ -11,8 +15,17 @@ export class BatchController {
      */
     @Post('station-update')
     async triggerStationUpdate(@Body() body: { limit?: number }) {
-        const limit = body.limit || 500;
+        const limit = body.limit || 50;
         return await this.stationUpdateService.triggerStationRouteUpdate(limit);
+    }
+
+    /**
+     * 노선 트래킹 배치 작업 수동 트리거
+     * POST /batch/bus-tracking
+     */
+    @Post('bus-tracking')
+    async triggerBusTracking() {
+        return await this.busTrackingService.triggerRealtimeBusTracking();
     }
 
     /**

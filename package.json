@@ -29,6 +29,7 @@
     "@nestjs/schedule": "^6.0.0",
     "axios": "^1.7.9",
     "bull": "^4.16.5",
+    "class-validator": "^0.14.2",
     "js-yaml": "^4.1.0",
     "mongoose": "^8.9.3",
     "nest-winston": "^1.10.2",

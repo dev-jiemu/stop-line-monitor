@@ -2,8 +2,8 @@ import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { StationService } from '../modules/station/station.service';
 import { Job, Queue } from 'bull';
 import { BusRouteInfo } from '../modules/apis/bus-route-info';
-import { StationDto, StationRouteDto } from '../models/station-dto';
-import { BusRouteListResponse } from '../interfaces/bus-route-list-response';
+import { StationDto, StationRouteDto } from '../modules/station/dto/station-dto';
+import { BusRouteListResponse } from '../modules/apis/interfaces/bus-route-list-response';
 import { Logger } from '@nestjs/common';
 
 @Processor('station-update')
@@ -218,8 +218,7 @@ export class StationUpdateProcessor {
                     const routeResponse = await this.busRouteInfo.getBusRouteList(station.stationId);
                     const processingTime = Date.now() - stationStartTime;
 
-                    // response object type check
-                    if (!this.isValidBusRouteResponse(routeResponse)) {
+                    if (!routeResponse) {
                         this.logger.error(`Invalid response structure for station ${station.stationId}`,
                             new Error('Invalid response structure'), {
                                 jobId: job.id,
@@ -374,15 +373,5 @@ export class StationUpdateProcessor {
             });
             throw error;
         }
-    }
-
-
-    /**
-     * isValidBusRouteResponse : response 객체 타입체크
-     * @param response
-     * @private
-     */
-    private isValidBusRouteResponse(response: any): response is BusRouteListResponse {
-        return response && response.response && response.response.msgHeader && typeof response.response.msgHeader.resultCode === 'number'
     }
 }

@@ -1,9 +1,17 @@
 ### 버스정류장 정보 리스트 조회
 GET {{public-api.openapi-url}}/BusStation?Key={{public-api.openapi-access-key}}&Type=json&pSize=50&pIndex=3&SIGUN_CD=41280
-Content-Type: application/json
 
 ### 경기버스정보: 정류소명/번호 목록조회
-GET {{public-api.data-url}}/busstationservice/v2/getBusStationListv2?serviceKey={{public-api.data-access-key}}&format=json&keyword=19348
+GET {{public-api.data-url}}/busstationservice/v2/getBusStationListv2?serviceKey={{public-api.data-access-key}}&format=json&keyword=19683
 
 ### 경기버스정보: 정류소 경유노선 목록조회
-GET {{public-api.data-url}}/busstationservice/v2/getBusStationViaRouteListv2?serviceKey={{public-api.data-access-key}}&format=json&stationId=218000317
+GET {{public-api.data-url}}/busstationservice/v2/getBusStationViaRouteListv2?serviceKey={{public-api.data-access-key}}&format=json&stationId=218000165
+
+### 경기버스정보: 버스위치정보 조회 서비스
+GET {{public-api.data-url}}/buslocationservice/v2/getBusLocationListv2?serviceKey={{public-api.data-access-key}}&format=json&routeId=219000026
+
+### 경기버스정보: 노선번호 목록조회 (이거 like 검색 같은데???)
+GET {{public-api.data-url}}/busrouteservice/v2/getBusRouteListv2?serviceKey={{public-api.data-access-key}}&format=json&keyword=1082
+
+### 경기버스정보: 노선정보 항목조회
+GET {{public-api.data-url}}/busrouteservice/v2/getBusRouteInfoItemv2?serviceKey={{public-api.data-access-key}}&format=json&routeId=219000006

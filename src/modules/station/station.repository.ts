@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Station, StationDocument } from '../../schemas/station.schema';
+import { Station, StationDocument } from './schemas/station.schema';
 import { HydratedDocument, Model } from 'mongoose';
-import { StationDto } from '../../models/station-dto'
+import { StationDto } from './dto/station-dto'
 
 @Injectable()
 export class StationRepository {
@@ -11,6 +11,19 @@ export class StationRepository {
     // getStationListForBatch: 업데이트 기준으로 limit search
     async getStationListForBatch(limit: number) : Promise<Array<HydratedDocument<StationDocument, {}, {}>>> {
         return await this.stationModel.find().sort({updatedDt: 1}).limit(limit).exec()
+    }
+
+    async getStationOne(stationId: string) : Promise<HydratedDocument<StationDocument, {}, {}>> {
+        return await this.stationModel.findOne({ stationId: stationId }).exec()
+    }
+
+    async getStationWithRouteName(stationId: string, routeName: string): Promise<HydratedDocument<StationDocument, {}, {}> | null> {
+        return await this.stationModel.findOne({
+            stationId: stationId,
+            routes: {
+                $elemMatch: { routeName: routeName }
+            }
+        }).exec();
     }
 
     async upsertStationOne(stationDto: StationDto) {

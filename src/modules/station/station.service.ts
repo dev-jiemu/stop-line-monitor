@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { StationRepository } from './station.repository';
-import { StationDto, StationRouteDto } from '../../models/station-dto';
+import { StationDto, StationRouteDto } from './dto/station-dto';
 
 @Injectable()
 export class StationService {
@@ -12,6 +12,10 @@ export class StationService {
 
     async updateStationLists(stations: StationDto[]) {
         await this.stationRepository.upsertStationMany(stations)
+    }
+
+    async getStationWithRouteName(stationId: string, routeName: string) {
+        return await this.stationRepository.getStationWithRouteName(stationId, routeName)
     }
 
     async getStationListForBatch(limit: number): Promise<StationDto[]> {
