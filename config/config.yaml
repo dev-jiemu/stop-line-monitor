@@ -4,6 +4,10 @@ http:
 mongo:
   url: 'mongodb+srv://username:password@stop-line-monitor.tnkxsct.mongodb.net/?retryWrites=true&w=majority&appName=stop-line-monitor'
 
+redis:
+  host: 'localhost'
+  port: 6379
+
 publicApi:
   stationInfoUrl: 'https://openapi.gg.go.kr/BusStation'
   serviceKey: '' # 경기 데이터 드림 사이트 인증키
