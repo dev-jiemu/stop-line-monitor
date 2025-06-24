@@ -171,16 +171,20 @@ sequenceDiagram
     participant W as Worker
     participant A as External API
     participant D as MongoDB
+    participant PS as Prediction Scheduler
     participant P as Prediction Service
     participant N as Slack Notification
 
+    Note over S,D: 데이터 수집 플로우
     S->>Q: 스케줄된 작업 추가
     Q->>W: 작업 처리 요청
     W->>A: 버스 위치 정보 조회
     A-->>W: 위치 데이터 응답
     W->>D: 데이터 저장
     
-    Note over P: 사용자 요청 시
+    Note over PS,N: 알림 플로우 (사용자 등록 시간에)
+    PS->>Q: 예측 및 알림 작업 스케줄링
+    Q->>P: 예측 작업 실행
     P->>D: 위치 이력 데이터 조회
     P->>P: 도착 시간 예측 계산
     P->>N: Slack 알림 전송
