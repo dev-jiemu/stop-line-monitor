@@ -10,7 +10,7 @@ export class StopEventRepository {
     }
 
     async upsertStopEventOne(stopEventDto: StopEventDto) {
-        const now = stopEventDto.createdDt || new Date();
+        const now = new Date();
         const timestamp = Math.floor(now.getTime() / 1000);
         const eventId = `${stopEventDto.routeId}-${stopEventDto.vehId}-${stopEventDto.stationId}_${timestamp}`;
 
@@ -19,11 +19,8 @@ export class StopEventRepository {
                 {
                     $set: {
                         ...stopEventDto,
-                        createdDt: now,
                     },
-                    $setOnInsert: {
-                        createdDt: now,
-                    },
+                    $setOnInsert: {},
                 },
                 {   // new: true, << 객체 필요하면 new option 주면됨
                     upsert: true,
@@ -33,13 +30,11 @@ export class StopEventRepository {
     }
 
     async upsertStopEventMany(stopEventDtos: StopEventDto[]) {
-        const baseTime = stopEventDtos[0]?.createdDt || new Date();
+        const baseTime = new Date();
         const timestamp = Math.floor(baseTime.getTime() / 1000);
 
         const bulkOps = stopEventDtos.map(stopEvent => {
             const eventId = `${stopEvent.routeId}-${stopEvent.vehId}-${stopEvent.stationId}_${timestamp}`;
-            const createdTime = stopEvent.createdDt || baseTime;
-
             return {
                 updateOne: {
                     filter: { eventId: eventId },
@@ -49,7 +44,7 @@ export class StopEventRepository {
                             eventId: eventId,
                             timestamp: timestamp
                         },
-                        $setOnInsert: { createdDt: createdTime }
+                        $setOnInsert: {}
                     },
                     upsert: true,
                 }

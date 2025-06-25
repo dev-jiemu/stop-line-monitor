@@ -48,10 +48,10 @@ export class Station {
     @Prop({ type: [RouteSchema] })
     routes: Route[]
 
-    @Prop()
+    @Prop({ default: Date.now })
     createdDt: Date
 
-    @Prop()
+    @Prop({ default: Date.now })
     updatedDt?: Date
 }
 

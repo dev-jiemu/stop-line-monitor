@@ -126,14 +126,12 @@ export class BusTrackingProcessor {
                 const locationList = locationResponse.response.msgBody.busLocationList;
 
                 let stopEventLists = [];
-                const currentTime = new Date();
                 for(const element of locationList) {
                     let stopEvent: StopEventDto = {
                         routeId: element.routeId,
                         vehId: element.vehId,
                         stationId: element.stationId,
                         remainSeatCnt: element.remainSeatCnt,
-                        createdDt: currentTime,
                     }
 
                     stopEventLists.push(stopEvent)

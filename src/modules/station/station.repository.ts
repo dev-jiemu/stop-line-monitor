@@ -27,19 +27,14 @@ export class StationRepository {
     }
 
     async upsertStationOne(stationDto: StationDto) {
-        const now = stationDto.updatedDt || new Date();
-        const createdTime = stationDto.createdDt || now;
+        const now =  new Date();
 
         await this.stationModel.findOneAndUpdate(
                 { stationId: stationDto.stationId },  // filter
                 {
                     $set: {
-                        ...stationDto,
-                        updatedDt: now
-                    },
-                    $setOnInsert: {
-                        createdDt: createdTime
-                    } // update
+                        ...stationDto, },
+                    $setOnInsert: {} // update
                 },
                 // options (new: true 옵션 주면 객체 리턴함ㅇㅇ)
                 {
@@ -52,23 +47,15 @@ export class StationRepository {
 
     // stationNo 겹치면 업데이트 처리, 아니면 insert 처리
     async upsertStationMany(stationList: StationDto[]) {
-        const defaultTime = new Date();
-
         const bulkOps = stationList.map(station => {
-            const now = station.updatedDt || defaultTime;
-            const createdTime = station.createdDt || now;
-            
             return {
                 updateOne: {
                     filter: { stationId: station.stationId },
                     update: {
                         $set: {
                             ...station,
-                            updatedDt: now
                         },
-                        $setOnInsert: {
-                            createdDt: createdTime
-                        }
+                        $setOnInsert: {}
                     },
                     upsert: true
                 }
