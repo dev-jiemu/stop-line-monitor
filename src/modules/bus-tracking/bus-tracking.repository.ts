@@ -15,7 +15,8 @@ export class BusTrackingRepository {
     }
 
     async upsertBusTracking(busTrackingDto: BusTrackingDto, routeDestId: number, targetStationId: string, targetStationName?: string) {
-        const now = new Date();
+        const now = busTrackingDto.updatedDt || new Date(); // DTO에 있으면 사용
+        const createdTime = busTrackingDto.createdDt || now;
         const trackingKey = `${busTrackingDto.routeName}-${targetStationId}`;
 
         await this.busTrackingModel.findOneAndUpdate(
@@ -35,7 +36,7 @@ export class BusTrackingRepository {
                     },
                     $setOnInsert: {
                         isActive: true, // 등록 요청이니까 default true
-                        createdDt: now,
+                        createdDt: createdTime,
                     }
                 },
                 {

@@ -10,7 +10,7 @@ export class StopEventRepository {
     }
 
     async upsertStopEventOne(stopEventDto: StopEventDto) {
-        const now = new Date();
+        const now = stopEventDto.createdDt || new Date();
         const timestamp = Math.floor(now.getTime() / 1000);
         const eventId = `${stopEventDto.routeId}-${stopEventDto.vehId}-${stopEventDto.stationId}_${timestamp}`;
 
@@ -33,11 +33,12 @@ export class StopEventRepository {
     }
 
     async upsertStopEventMany(stopEventDtos: StopEventDto[]) {
-        const now = new Date();
-        const timestamp = Math.floor(now.getTime() / 1000);
+        const baseTime = stopEventDtos[0]?.createdDt || new Date();
+        const timestamp = Math.floor(baseTime.getTime() / 1000);
 
         const bulkOps = stopEventDtos.map(stopEvent => {
             const eventId = `${stopEvent.routeId}-${stopEvent.vehId}-${stopEvent.stationId}_${timestamp}`;
+            const createdTime = stopEvent.createdDt || baseTime;
 
             return {
                 updateOne: {
@@ -48,7 +49,7 @@ export class StopEventRepository {
                             eventId: eventId,
                             timestamp: timestamp
                         },
-                        $setOnInsert: { createdDt: now }
+                        $setOnInsert: { createdDt: createdTime }
                     },
                     upsert: true,
                 }

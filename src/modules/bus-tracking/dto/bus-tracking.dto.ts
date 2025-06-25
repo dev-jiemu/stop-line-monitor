@@ -3,4 +3,6 @@ export class BusTrackingDto {
     routeId: number
     stationId: string
     notificationTime?: string[]
+    createdDt?: Date
+    updatedDt?: Date
 }

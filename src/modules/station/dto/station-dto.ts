@@ -8,6 +8,8 @@ export class StationDto {
     latitude: string
     longitude: string
     routes?: StationRouteDto[] // 정차하는 버스 노선 리스트
+    createdDt?: Date
+    updatedDt?: Date
 }
 
 export class StationRouteDto {

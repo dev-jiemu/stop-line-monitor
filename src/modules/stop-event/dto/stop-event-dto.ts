@@ -3,4 +3,5 @@ export class StopEventDto {
     vehId: number
     stationId: number
     remainSeatCnt?: number
+    createdDt?: Date  // 추가
 }

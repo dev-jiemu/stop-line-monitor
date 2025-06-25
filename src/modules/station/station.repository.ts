@@ -27,7 +27,8 @@ export class StationRepository {
     }
 
     async upsertStationOne(stationDto: StationDto) {
-        const now = new Date();
+        const now = stationDto.updatedDt || new Date();
+        const createdTime = stationDto.createdDt || now;
 
         await this.stationModel.findOneAndUpdate(
                 { stationId: stationDto.stationId },  // filter
@@ -37,7 +38,7 @@ export class StationRepository {
                         updatedDt: now
                     },
                     $setOnInsert: {
-                        createdDt: now
+                        createdDt: createdTime
                     } // update
                 },
                 // options (new: true 옵션 주면 객체 리턴함ㅇㅇ)
@@ -51,23 +52,28 @@ export class StationRepository {
 
     // stationNo 겹치면 업데이트 처리, 아니면 insert 처리
     async upsertStationMany(stationList: StationDto[]) {
-        const now = new Date();
+        const defaultTime = new Date();
 
-        const bulkOps = stationList.map(station => ({
-            updateOne: {
-                filter: { stationId: station.stationId },
-                update: {
-                    $set: {
-                        ...station,
-                        updatedDt: now
+        const bulkOps = stationList.map(station => {
+            const now = station.updatedDt || defaultTime;
+            const createdTime = station.createdDt || now;
+            
+            return {
+                updateOne: {
+                    filter: { stationId: station.stationId },
+                    update: {
+                        $set: {
+                            ...station,
+                            updatedDt: now
+                        },
+                        $setOnInsert: {
+                            createdDt: createdTime
+                        }
                     },
-                    $setOnInsert: {
-                        createdDt: now
-                    }
-                },
-                upsert: true
-            }
-        }))
+                    upsert: true
+                }
+            };
+        });
 
         await this.stationModel.bulkWrite(bulkOps)
     }
