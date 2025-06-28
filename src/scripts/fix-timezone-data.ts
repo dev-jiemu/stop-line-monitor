@@ -28,8 +28,8 @@ function getMongoUrl() {
     }
 }
 
-// 전체 컬렉션 타임존 수정
-async function fixAllTimezones() {
+// 전체 컬렉션 타임존 수정 (지정된 날짜 이후 데이터만)
+async function fixAllTimezones(cutoffDateString?: string) {
     console.log('='.repeat(60));
     console.log('📅 전체 컬렉션 타임존 수정 시작');
     console.log('='.repeat(60));
@@ -41,6 +41,20 @@ async function fixAllTimezones() {
         console.log('✅ MongoDB 연결 성공!');
 
         const db = mongoose.connection.db;
+
+        // 기준일 설정 (인자로 받거나 기본값 사용)
+        let cutoffDate: Date;
+        if (cutoffDateString) {
+            cutoffDate = new Date(cutoffDateString);
+            if (isNaN(cutoffDate.getTime())) {
+                throw new Error(`❌ 잘못된 날짜 형식: ${cutoffDateString}. YYYY-MM-DD 또는 YYYY-MM-DDTHH:mm:ss 형식을 사용하세요.`);
+            }
+            console.log(`📅 사용자 지정 기준일: ${cutoffDate.toISOString()}`);
+        } else {
+            cutoffDate = new Date('2024-06-24T00:00:00.000Z');
+            console.log(`📅 기본 기준일: ${cutoffDate.toISOString()}`);
+        }
+        console.log(`   → 이후 데이터만 UTC에서 KST로 변환합니다.`);
 
         // 수정할 컬렉션들
         const collections = [
@@ -54,8 +68,21 @@ async function fixAllTimezones() {
         for (const collection of collections) {
             console.log(`\n🔄 ${collection.name} 컬렉션 처리 중...`);
 
-            // 수정 전 샘플 데이터
-            const sampleBefore = await db.collection(collection.name).findOne({});
+            // 기준일 이후 데이터 개수 확인
+            const targetCount = await db.collection(collection.name).countDocuments({
+                createdDt: { $gte: cutoffDate }
+            });
+            console.log(`  대상 문서: ${targetCount}개 (${cutoffDate.toISOString()} 이후)`);
+
+            if (targetCount === 0) {
+                console.log(`  ⏭️ 수정할 데이터가 없습니다.`);
+                continue;
+            }
+
+            // 수정 전 샘플 데이터 (기준일 이후)
+            const sampleBefore = await db.collection(collection.name).findOne({
+                createdDt: { $gte: cutoffDate }
+            });
             if (sampleBefore) {
                 console.log(`  수정 전 샘플: ${sampleBefore.createdDt?.toISOString()}`);
             }
@@ -65,24 +92,29 @@ async function fixAllTimezones() {
             collection.fields.forEach(field => {
                 updateFields[field] = {
                     $cond: {
-                        if: { $type: `$${field}` },
+                        if: { $and: [
+                            { $type: `$${field}` },
+                            { $gte: [`$${field}`, cutoffDate] }
+                        ]},
                         then: { $add: [`$${field}`, NINE_HOURS_MS] },
                         else: `$${field}`,
                     },
                 };
             });
 
-            // 업데이트 실행
+            // 기준일 이후 데이터만 업데이트
             const result = await db.collection(collection.name).updateMany(
-                    {},
-                    [{ $set: updateFields }],
+                { createdDt: { $gte: cutoffDate } },
+                [{ $set: updateFields }],
             );
 
             console.log(`  ✅ ${collection.name}: ${result.modifiedCount}개 업데이트 완료`);
             totalUpdated += result.modifiedCount;
 
             // 수정 후 샘플 데이터
-            const sampleAfter = await db.collection(collection.name).findOne({});
+            const sampleAfter = await db.collection(collection.name).findOne({
+                createdDt: { $gte: new Date(cutoffDate.getTime() + NINE_HOURS_MS) }
+            });
             if (sampleAfter) {
                 console.log(`  수정 후 샘플: ${sampleAfter.createdDt?.toISOString()}`);
             }
@@ -90,6 +122,7 @@ async function fixAllTimezones() {
 
         console.log('\n' + '='.repeat(60));
         console.log(`🎉 전체 수정 완료! 총 ${totalUpdated}개 문서 업데이트`);
+        console.log(`📅 기준: ${cutoffDate.toISOString()} 이후 데이터만 처리`);
         console.log('='.repeat(60));
 
         await mongoose.disconnect();
@@ -182,8 +215,12 @@ async function checkData() {
 async function run() {
     const args = process.argv.slice(2);
     const command = args[0];
+    const dateArg = args[1]; // 두 번째 인자로 날짜 받기
 
     console.log('실행 명령어:', command || 'direct');
+    if (dateArg) {
+        console.log('기준 날짜:', dateArg);
+    }
 
     switch (command) {
         case 'backup':
@@ -194,11 +231,11 @@ async function run() {
             break;
         case 'service':
             console.log('⚠️ service 모드는 현재 direct 모드와 동일하게 동작합니다.');
-            await fixAllTimezones();
+            await fixAllTimezones(dateArg);
             break;
         case 'direct':
         default:
-            await fixAllTimezones();
+            await fixAllTimezones(dateArg);
             break;
     }
 }

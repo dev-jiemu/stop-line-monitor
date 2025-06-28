@@ -18,10 +18,14 @@
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
         "test:batch": "jest --testPathPattern=test/jobs",
-        "script:timezone-backup": "ts-node -r tsconfig-paths/register src/scripts/fix-timezone-data.ts backup",
-        "script:timezone-fix": "ts-node -r tsconfig-paths/register src/scripts/fix-timezone-data.ts service",
-        "script:timezone-direct": "ts-node -r tsconfig-paths/register src/scripts/fix-timezone-data.ts direct",
-        "script:timezone-check": "ts-node -r tsconfig-paths/register src/scripts/fix-timezone-data.ts check"
+        "script:timezone-backup": "node dist/src/scripts/fix-timezone-data.js backup",
+        "script:timezone-fix": "node dist/src/scripts/fix-timezone-data.js service",
+        "script:timezone-direct": "node dist/src/scripts/fix-timezone-data.js direct",
+        "script:timezone-check": "node dist/src/scripts/fix-timezone-data.js check",
+        "script:timezone-backup:dev": "ts-node -r tsconfig-paths/register src/scripts/fix-timezone-data.ts backup",
+        "script:timezone-fix:dev": "ts-node -r tsconfig-paths/register src/scripts/fix-timezone-data.ts service",
+        "script:timezone-direct:dev": "ts-node -r tsconfig-paths/register src/scripts/fix-timezone-data.ts direct",
+        "script:timezone-check:dev": "ts-node -r tsconfig-paths/register src/scripts/fix-timezone-data.ts check"
     },
     "dependencies": {
         "@nestjs/bull": "^11.0.2",
