@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { ConfigService } from '@nestjs/config';
+import { SlackApi } from '../modules/apis/slack-api';
 
 @Injectable()
 export class StationUpdateService {
@@ -10,7 +11,8 @@ export class StationUpdateService {
     
     constructor(
         @InjectQueue('station-update') private stationQueue: Queue,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
+        private readonly slackApi: SlackApi
     ) {
         this.setupStartJobs();
     }

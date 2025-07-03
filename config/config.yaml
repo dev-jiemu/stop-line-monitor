@@ -2,7 +2,7 @@ http:
   port: 3000
 
 mongo:
-  url: 'mongodb+srv://username:password@stop-line-monitor.tnkxsct.mongodb.net/?retryWrites=true&w=majority&appName=stop-line-monitor'
+  url: ''
 
 redis:
   host: 'localhost'
@@ -13,3 +13,6 @@ publicApi:
   serviceKey: '' # 경기 데이터 드림 사이트 인증키
   busRouteServiceUrl: 'https://apis.data.go.kr/6410000'
   routeServiceKey: '' # 공공데이터 포털 인증키
+
+slack:
+  webhookUrl: ''

@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
-import { ConfigService } from '@nestjs/config'
+import { ConfigService } from '@nestjs/config';
+import { SlackApi } from '../modules/apis/slack-api';
 
 @Injectable()
 export class BusTrackingService {
@@ -10,6 +11,7 @@ export class BusTrackingService {
     constructor(
             @InjectQueue('bus-tracking') private busTrackingQueue: Queue,
             private readonly configService: ConfigService,
+            private readonly slackApi: SlackApi,
     ) {
         this.setupStartJobs();
     }
@@ -50,17 +52,17 @@ export class BusTrackingService {
     async triggerRealtimeBusTracking() {
         try {
             const job = await this.busTrackingQueue.add(
-                'realtime-bus-tracking',
-                null,
-                {
-                    attempts: 3,
-                    backoff: {
-                        type: 'exponential',
-                        delay: 5000,
-                    },
-                    removeOnComplete: false,
-                    removeOnFail: false,
-                }
+                    'realtime-bus-tracking',
+                    null,
+                    {
+                        attempts: 3,
+                        backoff: {
+                            type: 'exponential',
+                            delay: 5000,
+                        },
+                        removeOnComplete: false,
+                        removeOnFail: false,
+                    }
             );
 
             this.logger.log(`Triggered station update job with ID: ${job.id}`);
@@ -79,5 +81,4 @@ export class BusTrackingService {
     }
 
     // TODO : 작업상태 로깅용 추가
-
 }

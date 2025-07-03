@@ -75,7 +75,7 @@ export const fetchApiGet = async <T>(
 
 
 // TODO : post 도 재시도 로직 필요하면 get 처럼 변경 요망
-const fetchApiPost = async <T>(url: string, header?: Record<string, string>, body?: any): Promise<T | null> => {
+export const fetchApiPost = async <T>(url: string, header?: Record<string, string>, body?: any): Promise<T | null> => {
     try {
         let axiosHeader = {
             'Content-Type': 'application/json',

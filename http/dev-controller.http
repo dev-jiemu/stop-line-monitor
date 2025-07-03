@@ -7,10 +7,8 @@ Content-Type: application/json
 }
 
 
-
 ### 개발용 컨트롤러 : batch job status search
 GET {{endpoint}}/batch/status
-
 
 
 ### 개발용 컨트롤러 : batch job status search for jobId
@@ -38,15 +36,13 @@ POST {{endpoint}}/batch/bus-tracking
 Content-Type: application/json
 
 
-
-
 ### 개발용 컨트롤러 : 정류장 노선 트래킹 수동 요청
 POST {{endpoint}}/bus/tracking
 Content-Type: application/json
 
 {
     "stationId": "218000165",
-    "routeId": 219000006,
-    "routeName": "1082",
+    "routeId": 229000023,
+    "routeName": "9710",
     "notificationTime": ["09", "10", "11"]
 }
