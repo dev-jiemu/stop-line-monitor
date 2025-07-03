@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose'
+import { TimezoneUtil } from 'src/utils/timezone.util';
 
 @Schema({ _id: false }) // 중첩 스키마에는 보통 _id: false 옵션을 사용한다고? ㅇㅂㅇ
 export class Route {
@@ -48,10 +49,10 @@ export class Station {
     @Prop({ type: [RouteSchema] })
     routes: Route[]
 
-    @Prop({ default: Date.now })
+    @Prop({ default: () => TimezoneUtil.getKoreanTime() })
     createdDt: Date
 
-    @Prop({ default: Date.now })
+    @Prop({ default: () => TimezoneUtil.getKoreanTime() })
     updatedDt?: Date
 }
 

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose'
+import { TimezoneUtil } from 'src/utils/timezone.util';
 
 @Schema()
 export class BusTracking {
@@ -21,10 +22,10 @@ export class BusTracking {
     @Prop()
     targetStationName: string
 
-    @Prop({ default: Date.now })
+    @Prop({ default: () => TimezoneUtil.getKoreanTime() })
     createdDt: Date
 
-    @Prop({ default: Date.now })
+    @Prop({ default: () => TimezoneUtil.getKoreanTime() })
     updatedDt: Date
 
     @Prop({ default: true })

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose'
+import { TimezoneUtil } from '../../../utils/timezone.util';
 
 @Schema()
 export class StopEvent {
@@ -15,7 +16,7 @@ export class StopEvent {
     @Prop({ required: true })
     stationId: string
 
-    @Prop({ default: Date.now })
+    @Prop({ default: () => TimezoneUtil.getKoreanTime() })
     createdDt: Date
 
     @Prop()
