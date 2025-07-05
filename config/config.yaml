@@ -15,4 +15,5 @@ publicApi:
   routeServiceKey: '' # 공공데이터 포털 인증키
 
 slack:
-  webhookUrl: ''
+  token: ''
+  channelId: ''

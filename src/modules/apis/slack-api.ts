@@ -10,7 +10,7 @@ export class SlackApi {
     private readonly channelId: string;
 
     constructor(private readonly configService: ConfigService) {
-        this.botClient = new WebClient(this.configService.get('slack.webhookUrl'));
+        this.botClient = new WebClient(this.configService.get('slack.token'));
         this.channelId = this.configService.get('slack.channelId');
     }
 
