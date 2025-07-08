@@ -28,10 +28,28 @@ export class BusTrackingService {
 
     async getBusTrackingListForRealtimeBatch() : Promise<BusTrackingDto[]> {
         const busTrackingDtos: BusTrackingDto[] = []
-        let busTrackingList = await this.busRepository.findAllTracking()
+        const busTrackingList = await this.busRepository.findAllTracking()
         if (busTrackingList !== undefined && busTrackingList.length > 0) {
             for(const busTracking of busTrackingList) {
                 const busTrackingDto = new BusTrackingDto()
+                busTrackingDto.routeId = busTracking.routeId
+                busTrackingDto.routeName = busTracking.routeName
+                busTrackingDto.stationId = busTracking.targetStationId
+
+                busTrackingDtos.push(busTrackingDto)
+            }
+        }
+
+        return busTrackingDtos
+    }
+
+    async getActiveBusTrackingList(currentHour : string) : Promise<BusTrackingDto[]> {
+        const busTrackingDtos: BusTrackingDto[] = []
+        const busTrackingList = await this.busRepository.findTrackingByNotificationTime(currentHour)
+
+        if (busTrackingList !== undefined && busTrackingList.length > 0) {
+            for(const busTracking of busTrackingList) {
+                const busTrackingDto = new BusTrackingDto();
                 busTrackingDto.routeId = busTracking.routeId
                 busTrackingDto.routeName = busTracking.routeName
                 busTrackingDto.stationId = busTracking.targetStationId

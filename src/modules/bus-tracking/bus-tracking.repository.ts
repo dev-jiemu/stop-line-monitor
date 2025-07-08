@@ -14,6 +14,15 @@ export class BusTrackingRepository {
         return await this.busTrackingModel.find({ isActive: true }).exec()
     }
 
+    async findTrackingByNotificationTime(currentHour: string): Promise<BusTracking[]> {
+        return await this.busTrackingModel.find({
+            isActive: true,
+            notificationTime: {
+                $in: [currentHour] // currentHour in
+            }
+        }).exec();
+    }
+
     async upsertBusTracking(busTrackingDto: BusTrackingDto, routeDestId: number, targetStationId: string, targetStationName?: string) {
         const trackingKey = `${busTrackingDto.routeName}-${targetStationId}`;
 

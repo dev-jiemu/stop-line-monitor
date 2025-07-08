@@ -11,8 +11,7 @@ export class StationUpdateService {
     
     constructor(
         @InjectQueue('station-update') private stationQueue: Queue,
-        private readonly configService: ConfigService,
-        private readonly slackApi: SlackApi
+        private readonly configService: ConfigService
     ) {
         this.setupStartJobs();
     }

@@ -19,6 +19,9 @@ import { BusTrackingProcessor } from './bus-tracking-processor';
         BullModule.registerQueue({
            name: 'bus-tracking',
         }),
+        BullModule.registerQueue({
+            name: 'stop-event-prediction'
+        }),
         StationModule, StopEventModule, BusTrackingModule, ApiModule,
     ],
     controllers: [BatchController],
