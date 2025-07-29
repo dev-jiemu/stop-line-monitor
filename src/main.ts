@@ -14,6 +14,7 @@ async function bootstrap() {
 
     const configService = app.get(ConfigService);
     const port = configService.get('http.port') ?? 3000;
+    const devMode = configService.get('devMode') ?? false;
 
     await app.listen(port);
 
@@ -21,6 +22,7 @@ async function bootstrap() {
     console.log(`📂 Log files are stored in: logs/`);
     console.log(`🌏 Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
     console.log(`⏰ Current time: ${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}`);
+    console.log(`⚙️ Dev Mode: ${devMode}`)
 }
 
 bootstrap().catch(error => {

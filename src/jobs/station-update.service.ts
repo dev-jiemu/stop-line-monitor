@@ -13,7 +13,14 @@ export class StationUpdateService {
         @InjectQueue('station-update') private stationQueue: Queue,
         private readonly configService: ConfigService
     ) {
-        this.setupStartJobs();
+        // this.setupStartJobs();
+
+        if (!this.configService.get('devMode')) {
+            this.setupStartJobs();
+            this.logger.log('Station-Update Batch jobs started - Production mode');
+        } else {
+            this.logger.log('Station-Update Batch jobs skipped - Development mode');
+        }
     }
 
     /**

@@ -6,7 +6,36 @@ import { StopEventDto } from './dto/stop-event-dto';
 
 @Injectable()
 export class StopEventRepository {
-    constructor(@InjectModel(StopEvent.name) private readonly stopEventModel: Model<StopEventDocument>) {
+    constructor(@InjectModel(StopEvent.name) private readonly stopEventModel: Model<StopEventDocument>) {}
+
+    async findStopEventByNotificationTime(currentHour: string, routeId: number, stationId: string, daysBefore: number = 7): Promise<StopEvent[]> {
+        const results = [];
+        const targetHour = parseInt(currentHour);
+
+        // 7일간의 데이터를 각각 조회
+        for(let i = 1; i <= daysBefore; i++) {
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() - i);
+
+            const startOfDay = new Date(targetDate);
+            startOfDay.setHours(targetHour - 1, 0, 0, 0); // 1시간 버퍼
+
+            const endOfDay = new Date(targetDate);
+            endOfDay.setHours(targetHour + 1, 59, 59, 999); // 1시간 버퍼
+
+            const dayData = await this.stopEventModel.find({
+                routeId: routeId,
+                stationId: stationId,
+                createdDt: {
+                    $gte: startOfDay,
+                    $lte: endOfDay
+                }
+            }).exec();
+
+            results.push(...dayData);
+        }
+
+        return results;
     }
 
     async upsertStopEventOne(stopEventDto: StopEventDto) {

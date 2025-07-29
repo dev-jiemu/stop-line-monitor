@@ -9,10 +9,17 @@ export class StopEventPredictionService {
     private readonly DEFAULT_CRON = '0 * * * *'; // 매시각 0분에 실행
 
     constructor(
-            @InjectQueue('stop-event-prediction') private stopEventPredictionQueue: Queue,
+            @InjectQueue('send-arrival-notification') private sendArrivalNotificationQueue: Queue,
             private readonly configService: ConfigService,
     ) {
-        this.setupStartJobs();
+        // this.setupStartJobs();
+
+        if (!this.configService.get('devMode')) {
+            this.setupStartJobs();
+            this.logger.log('Stop-Event-Prediction Batch jobs started - Production mode');
+        } else {
+            this.logger.log('Stop-Event-Prediction Batch jobs skipped - Development mode');
+        }
     }
 
     /**
@@ -20,16 +27,19 @@ export class StopEventPredictionService {
      */
     async setupStartJobs() {
         try {
-            const repeatableJobs = await this.stopEventPredictionQueue.getRepeatableJobs();
+            const repeatableJobs = await this.sendArrivalNotificationQueue.getRepeatableJobs();
             for (const job of repeatableJobs) {
-                await this.stopEventPredictionQueue.removeRepeatableByKey(job.key);
+                await this.sendArrivalNotificationQueue.removeRepeatableByKey(job.key);
             }
 
             const cronSchedule = this.configService.get('batch.stopEventPredictionCron', this.DEFAULT_CRON);
 
-            await this.stopEventPredictionQueue.add(
-                    'send-arrival-notification',
-                    {},
+            await this.sendArrivalNotificationQueue.add(
+                    'send-arrival-summary',
+                    { 
+                        executionTime: new Date().toISOString(),
+                        isScheduled: true 
+                    },
                     {
                         repeat: { cron: cronSchedule },
                         jobId: 'daily-stop-event-prediction',
@@ -48,11 +58,16 @@ export class StopEventPredictionService {
         }
     }
 
-    async triggerPredictionJob() {
+    async triggerArrivalSummaryJob(summeryTime: string) {
         try {
-            const job = await this.stopEventPredictionQueue.add(
-                    'send-arrival-notification',
-                    {},
+            const executionTime = summeryTime || new Date().toISOString();
+            
+            const job = await this.sendArrivalNotificationQueue.add(
+                    'send-arrival-summary',
+                    { 
+                        executionTime: executionTime,
+                        isScheduled: false 
+                    },
                     {
                         attempts: 3,
                         backoff: { type: 'exponential', delay: 5000 },
@@ -60,8 +75,8 @@ export class StopEventPredictionService {
                         removeOnFail: false,
                     },
             );
-            this.logger.log(`Triggered stop-event-prediction job with ID: ${job.id}`);
-            return { success: true, jobId: job.id, status: await job.getState() };
+            this.logger.log(`Triggered stop-event-prediction job with ID: ${job.id}, executionTime: ${executionTime}`);
+            return { success: true, jobId: job.id, status: await job.getState(), executionTime };
         } catch (error) {
             this.logger.error(`Failed to trigger stop-event-prediction job: ${error.message}`);
             return { success: false, error: error.message };

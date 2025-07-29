@@ -46,3 +46,12 @@ Content-Type: application/json
     "routeName": "9710",
     "notificationTime": ["09", "10", "11"]
 }
+
+
+### 개발용 컨트롤러 : 슬랙 알림 수동 요청(요청 시점에 대한 과거데이터 알람)
+POST {{endpoint}}/batch/arrival-summary
+Content-Type: application/json
+
+{
+    "summeryTime": "10"
+}

@@ -10,6 +10,8 @@ import { BusTrackingModule } from '../modules/bus-tracking/bus-tracking.module';
 import { ApiModule } from '../modules/apis/api.module';
 import { BusTrackingService } from './bus-tracking.service';
 import { BusTrackingProcessor } from './bus-tracking-processor';
+import { StopEventPredictionService } from './stop-event-prediction.service';
+import { StopEventPredictionProcessor } from './stop-event-prediction-processor';
 
 @Module({
     imports: [
@@ -20,7 +22,7 @@ import { BusTrackingProcessor } from './bus-tracking-processor';
            name: 'bus-tracking',
         }),
         BullModule.registerQueue({
-            name: 'stop-event-prediction'
+            name: 'send-arrival-notification'
         }),
         StationModule, StopEventModule, BusTrackingModule, ApiModule,
     ],
@@ -30,6 +32,8 @@ import { BusTrackingProcessor } from './bus-tracking-processor';
         StationUpdateProcessor,
         BusRouteInfo,
         BusTrackingService,
+        StopEventPredictionService,
+        StopEventPredictionProcessor,
         BusTrackingProcessor,
     ],
     exports: [StationUpdateService, BusTrackingService],

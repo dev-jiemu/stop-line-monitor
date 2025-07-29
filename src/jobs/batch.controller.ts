@@ -1,12 +1,14 @@
-import { Controller, Post, Get, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { StationUpdateService } from './station-update.service';
 import { BusTrackingService } from './bus-tracking.service';
+import { StopEventPredictionService } from './stop-event-prediction.service';
 
 @Controller('batch')
 export class BatchController {
     constructor(
             private readonly stationUpdateService: StationUpdateService,
-            private readonly busTrackingService: BusTrackingService
+            private readonly busTrackingService: BusTrackingService,
+            private readonly stopEventPrediction: StopEventPredictionService,
     ) {}
 
     /**
@@ -27,6 +29,21 @@ export class BatchController {
     async triggerBusTracking() {
         return await this.busTrackingService.triggerRealtimeBusTracking();
     }
+
+
+    /** 버스 도착 히스토리 정보 전송
+     * POST /batch/arrival-summary
+     */
+    @Post('arrival-summary')
+    async getArrivalSummary(@Body() body: {summeryTime?: string}) {
+        if (!body.summeryTime) {
+            throw new HttpException('summery time is empty', HttpStatus.BAD_REQUEST);
+        }
+
+        return await this.stopEventPrediction.triggerArrivalSummaryJob(body.summeryTime);
+    }
+
+    // ==============================
 
     /**
      * 배치 작업 상태 조회

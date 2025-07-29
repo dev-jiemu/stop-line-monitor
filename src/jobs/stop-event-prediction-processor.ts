@@ -20,18 +20,31 @@ export class StopEventPredictionProcessor {
         this.logger.log(`Processing send arrival summary...`);
         const startDate = Date.now();
 
-        const now = new Date();
-        const currentHour = now.getHours().toString().padStart(2, '0'); // "08", "09" 형태
+        // job.data에서 executionTime과 isScheduled 추출
+        const { executionTime, isScheduled } = job.data;
+
+        let currentHour, targetTime;
+        if (isScheduled) {
+            targetTime = new Date(executionTime);
+            currentHour = targetTime.getHours().toString().padStart(2, '0');
+        } else {
+            currentHour = executionTime.toString().padStart(2, '0');
+        }
+
+        this.logger.log(`Execution mode: ${isScheduled ? 'Scheduled' : 'Controller'}, Target time: ${executionTime}, Hour: ${currentHour}`);
 
         try {
             // 노선 정보 get
-            const notificationList = await this.busTrackingService.getActiveBusTrackingList(currentHour)
+            const notificationList = await this.busTrackingService.getActiveBusTrackingList(currentHour);
             this.logger.log(`Notification bus route lists : ${notificationList.length}`)
 
-            // 일단 단순한 for 문으로 처리하는데 데이터가 많아지면 분할해야함
-            // 굳이 알람을 0분에 딱 맞춰서 보낼 필요는 없음(아직까진)
             for(const notification of notificationList) {
-                // TODO : currentHour stop-event list
+                const eventLists = await this.stopEventService.getRouteStopEventList(currentHour, notification.routeId, notification.stationId);
+                this.logger.log(`bus route event lists : ${eventLists.length}`);
+                for(const events of eventLists) {
+                    console.log(events);
+                    // TODO : 10분 배치로 했더니 데이터가 심각하게 부족해서 배치 간격 줄이고 다시 이어서 함
+                }
             }
 
         } catch (error) {
@@ -39,6 +52,8 @@ export class StopEventPredictionProcessor {
             this.logger.error(`Error processing stop-event-notification`, error, {
                 jobId: job.id,
                 processingTimeMs: processingTime,
+                executionTime,
+                isScheduled,
             });
         }
 

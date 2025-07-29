@@ -13,7 +13,13 @@ export class BusTrackingService {
             private readonly configService: ConfigService,
             private readonly slackApi: SlackApi,
     ) {
-        this.setupStartJobs();
+        // this.setupStartJobs();
+        if (!this.configService.get('devMode')) {
+            this.setupStartJobs();
+            this.logger.log('Bus-Tracking Batch jobs started - Production mode');
+        } else {
+            this.logger.log('Bus-Tracking Batch jobs skipped - Development mode');
+        }
     }
 
     async setupStartJobs() {
@@ -24,7 +30,7 @@ export class BusTrackingService {
             }
 
             // 스케줄 정의 (환경 설정에서 가져올 수도 있음)
-            const cronSchedule = this.configService.get('batch.busTrackingCron', '*/10 * * * *')
+            const cronSchedule = this.configService.get('batch.busTrackingCron', '*/3 * * * *')
 
             await this.busTrackingQueue.add('realtime-bus-tracking', null, {
                 repeat: {

@@ -130,7 +130,7 @@ export class BusTrackingProcessor {
                     let stopEvent: StopEventDto = {
                         routeId: element.routeId,
                         vehId: element.vehId,
-                        stationId: element.stationId,
+                        stationId: String(element.stationId),
                         remainSeatCnt: element.remainSeatCnt,
                     }
 
